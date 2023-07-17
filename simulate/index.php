@@ -52,70 +52,82 @@
             </div>
         </nav>
 
-        <div id="body" style="height:100%;display:grid;grid-template-columns:auto 5px 300px;flex:1 1 auto;overflow:scroll">
+        <div id="body" style="height:100%;display:grid;grid-template-columns:auto 5px 340px;flex:1 1 auto;overflow:hidden">
             <div id='dropwindow' style="overflow:hidden">
                 <div id="simulation-window" style="background-color:none;z-index:-2;position:relative">
-                    <div class='gate' style="top:0px;left:0px">
-                        <div class='in'>
-                            <div class="connector">
-                                <div class='circle'></div>
-                                <div class='line'></div>
-                            </div>
-                            <div class="connector">
-                                <div class='circle'></div>
-                                <div class='line'></div>
-                            </div>
+                    <div class="gate" style="top:0px;left:0px">
+                        <div class="input-2">
+                            <div class="connector off"></div>
+                            <div class="connector off"></div>
                         </div>
-                        <div class='and'></div>
-                        <div class='out'>
-                            <div class='line'></div>
-                            <div class='circle'></div>
-                        </div>
+                        <div class="and"><img src="images/gates/AND.svg"></div>
+                        <div class="connector off"></div>
                     </div>
 
-                    <div class='gate' style="top:100px;left:0px">
-                        <div class='in'>
-                            <div class="connector">
-                                <div class='circle'></div>
-                                <div class='line'></div>
-                            </div>
+                    <div class="gate" style="top:50px;left:0px">
+                        <div class="input-2">
+                            <div class="connector off"></div>
+                            <div class="connector off"></div>
                         </div>
-                        <div class='not'>▷</div>
-                        <div class='out-inverted'>
-                            <div class='small-circle'></div>
-                            <div class='short-line'></div>
-                            <div class='circle'></div>
-                        </div>
+                        <div class="or"><img src="images/gates/OR.svg"></div>
+                        <div class="connector off"></div>
                     </div>
 
-                    <div class='gate' style="top:200px;left:0px">
-                        <div class='in'>
-                            <div class="connector">
-                                <div class='circle'></div>
-                                <div class='line'></div>
-                            </div>
-                            <div class="connector">
-                                <div class='circle'></div>
-                                <div class='line'></div>
-                            </div>
+                    <div class="gate" style="top:100px;left:0px">
+                        <div class="input-1">
+                            <div class="connector off"></div>
                         </div>
-                        <div class='or'>OR</div>
-                        <div class='out'>
-                            <div class='line'></div>
-                            <div class='circle'></div>
-                        </div>
+                        <div class="not"><img src="images/gates/NOT.svg"></div>
+                        <div class="connector on"></div>
                     </div>
+
+                    <div class="gate" style="top:150px;left:0px">
+                        <div class="input-2">
+                            <div class="connector off"></div>
+                            <div class="connector off"></div>
+                        </div>
+                        <div class="nand"><img src="images/gates/NAND.svg"></div>
+                        <div class="connector on"></div>
+                    </div>
+
+                    <div class="gate" style="top:200px;left:0px">
+                        <div class="input-2">
+                            <div class="connector off"></div>
+                            <div class="connector off"></div>
+                        </div>
+                        <div class="nor"><img src="images/gates/NOR.svg"></div>
+                        <div class="connector on"></div>
+                    </div>
+
+                    <div class="gate" style="top:250px;left:0px">
+                        <div class="input-2">
+                            <div class="connector off"></div>
+                            <div class="connector off"></div>
+                        </div>
+                        <div class="xor"><img src="images/gates/XOR.svg"></div>
+                        <div class="connector off"></div>
+                    </div>
+
+                    <div class="gate" style="top:300px;left:0px">
+                        <div class="input-2">
+                            <div class="connector off"></div>
+                            <div class="connector off"></div>
+                        </div>
+                        <div class="xnor"><img src="images/gates/XNOR.svg"></div>
+                        <div class="connector on"></div>
+                    </div>
+
                 </div>
             </div>
             <div style="background-color:#333"></div>
-            <div id="side-panel" style="background-color:#EEE;user-select:none">
+            <div id="side-panel" style="background-color:#EEE;user-select:none;overflow:scroll">
                 <ul class="accordion">
                     <li>
                         <button class="accordion-control">Inputs</button>
                         <div class="accordion-panel" style="display:block">
-                            <div style="display:grid;grid-template-columns: 80px 80px 80px; gap:10px">
+                            <div style="display:grid;grid-template-columns:150px 150px; gap:10px">
                                 <div id='button' style="display:flex;flex-direction:column;justify-content:center">
-                                    <div style="height:100px;background-color:red;z-index:200" draggable='true'></div>
+                                    <div style="height:100px;background-color:red" draggable='true'></div>
                                     <div style="margin:auto">Button</div>
                                 </div>
                                 <div id="switch" style="display:flex;flex-direction:column;justify-content:center">
@@ -141,11 +153,11 @@
                         <button class="accordion-control">Outputs</button>
                         <div class="accordion-panel" style="display:block">
                             <div style="display:grid;grid-template-columns: 80px 80px 80px; gap:10px">
-                                <div id='button' style="display:flex;flex-direction:column;justify-content:center">
+                                <div id='led' style="display:flex;flex-direction:column;justify-content:center">
                                     <div style="height:100px;background-color:red;z-index:200" draggable='true'></div>
                                     <div style="margin:auto">LED</div>
                                 </div>
-                                <div id="switch" style="display:flex;flex-direction:column;justify-content:center">
+                                <div id="7-seg" style="display:flex;flex-direction:column;justify-content:center">
                                     <div style="height:100px;background-color:red" draggable='true'></div>
                                     <div style="margin:auto">7-Seg</div>
                                 </div>
@@ -155,16 +167,17 @@
                     <li>
                         <button class="accordion-control">Gates</button>
                         <div class="accordion-panel" style="display:block">
-                            <div style="display:grid;grid-template-columns: 80px 80px 80px; gap:10px">
-                                <div id='button' style="display:flex;flex-direction:column;justify-content:center">
-                                    <div style="height:100px;background-color:red;z-index:200" draggable='true'></div>
+                            <div style="display:grid;grid-template-columns: 150px 150px; gap:10px">
+                                <div id='not-gate' style="display:flex;flex-direction:column;justify-content:center">
+                                    <div style="height:100px;background-color:red" draggable='true'></div>
                                     <div style="margin:auto">NOT</div>
                                 </div>
-                                <div id="switch" style="display:flex;flex-direction:column;justify-content:center">
-                                    <div style="height:100px;background-color:red" draggable='true'></div>
+                                <div id="and-gate" style="display:flex;flex-direction:column;justify-content:center">
+                                    <div style="height:100px;background-color:red;" draggable='true'>
+                                    </div>
                                     <div style="margin:auto">AND</div>
                                 </div>
-                                <div id="clock" style="display:flex;flex-direction:column;justify-content:center">
+                                <div id="or-gate" style="display:flex;flex-direction:column;justify-content:center">
                                     <div style="height:100px;background-color:red" draggable='true'></div>
                                     <div style="margin:auto">OR</div>
                                 </div>
@@ -175,7 +188,7 @@
                         <button class="accordion-control">Other</button>
                         <div class="accordion-panel" style="display:block">
                             <div style="display:grid;grid-template-columns: 80px 80px 80px; gap:10px">
-                                <div id='button' style="display:flex;flex-direction:column;justify-content:center">
+                                <div id='label' style="display:flex;flex-direction:column;justify-content:center">
                                     <div style="height:100px;background-color:red;z-index:200" draggable='true'></div>
                                     <div style="margin:auto">Label</div>
                                 </div>

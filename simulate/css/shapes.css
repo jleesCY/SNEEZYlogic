@@ -1,95 +1,45 @@
 .gate {
-    position:absolute;
+    position: absolute;
     display: grid;
-    grid-template-columns: 50px 50px 50px;
+    grid-template-columns: 20px 112px 20px;
+    padding:2px;
     gap:0;
-    height: 50px;
+    width: 152px;
+    align-items: center;
 }
 
-.in {
-    width:50px;
-    height:50px;
-    display:flex;
-    flex-direction: column;
-    align-items:center;
-    justify-content:center;
+.select {
+    filter: drop-shadow(0 0 3px rgb(255,25,25));
 }
-.out {
-    width:50px;
-    height:50px;
-    display:flex;
-    flex-direction:row;
-    align-items:center;
-    justify-content:center;
+
+.input-1 {
+    position: relative;
+    align-items: center;
+    justify-content:right
 }
-.out-inverted {
-    width:50px;
-    height:50px;
-    display:flex;
-    flex-direction:row;
-    align-items:center;
-    justify-content:center;
+.input-2 {
+    position: relative;
+    display: grid;
+    grid-template-rows: 20px 20px;
+    width: 20px;
+    gap:5px;
+    align-items: center;
+    justify-content:right
 }
 
 .connector {
-    width:50px;
-    height:25px;
-    display:flex;
-    flex-direction: row;
-    align-items:center;
-    justify-content:center;
-}
-.circle {
-    background-color:white;
+    padding:0;
+    margin:0;
     width:20px;
     height:20px;
-    border:3px solid #222;
-    border-radius: 1000px
-}
-.small-circle {
-    background-color:white;
-    width:15px;
-    height:15px;
-    border:5px solid #222;
-    border-radius: 1000px
-}
-.line {
-    width:30px;
-    height:5px;
-    border:3px solid #222;
-}
-.short-line {
-    width:15px;
-    height:5px;
-    border:3px solid #222;
+    border-radius: 25px;
+    border: 3px solid #000
 }
 
-.and {
-    background-color:#DDD;
-    border: 7px solid #222;
-    width:50px;
-    height:50px;
-    border-radius:0 1000px 1000px 0;
+.off {
+    background-color:#777
 }
-.or {
-    background-color:#DDD;
-    border: 7px solid #222;
-    width:50px;
-    height:50px;
-    font-size:17pt;
-    -webkit-text-stroke-width: 2px;
-    -webkit-text-stroke-color: #222;
-    line-height:35px;
-    text-indent:0px;
-}
-.not {
-    background-color:#DDD;
-    width: 50px;
-    height: 50px;
-    font-size:50pt;
-    -webkit-text-stroke-width: 4px;
-    -webkit-text-stroke-color: #222;
-    padding:0;
-    line-height:48px;
-    text-indent:-3px;
+
+.on {
+    background-color:rgb(255,75,75)
 }
