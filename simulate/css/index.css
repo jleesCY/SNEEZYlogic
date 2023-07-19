@@ -3,6 +3,7 @@
 body{
   background:#222;
   font-family:'Montserrat';
+  user-select:none;
 }
 
 .accordion{
@@ -29,9 +30,16 @@ li{
   height:35px
 }
 
-.accordion-panel{
+.accordion-panel {
   padding: 0.5em;
   background:#EEE;
   color:#111;
   display: none;
+}
+
+.toolbar-button:hover {
+  border: 2px solid rgb(227, 80, 80);
+}
+.toolbar-button:active {
+  background: rgb(227, 80, 80);
 }

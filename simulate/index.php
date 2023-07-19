@@ -9,6 +9,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
         <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
         <link href="css/index.css" rel="stylesheet">
         <link href="css/shapes.css" rel="stylesheet">
         
@@ -23,15 +24,16 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <button title='Undo' style='background-color:white;width:35px;height:35px;padding:0;margin:0;border-radius:5px'><img src="images/other/undo.svg" /></button>
-                        <button title='Redo' style='background-color:white;width:35px;height:35px;padding:0;margin:0;border-radius:5px'><img src="images/other/redo.svg" /></button>
+                        <button class='toolbar-button' title='Undo' style='background-image:url("images/other/undo.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px' onclick='undo()' draggable='false'></button>
+                        <button class='toolbar-button' title='Redo' style='background-image:url("images/other/redo.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px' onclick='redo()' draggable='false'></button>
                         <div style="width:10px"></div>
-                        <button title='Pan' style='background-color:white;width:35px;height:35px;padding:0;margin:0;border-radius:5px'><img src="images/other/pan.svg" /></button>
-                        <button title='Edit Circuit' style='background-color:white;width:35px;height:35px;padding:0;margin:0;border-radius:5px'><img src="images/other/cursor.svg" /></button>
+                        <button id='pan-button' class='toolbar-button' title='Pan' style='background-image:url("images/other/pan.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px' onclick='mode(0)' draggable='false'></button>
+                        <button id='edit-button' class='toolbar-button' title='Edit Circuit' style='background-image:url("images/other/cursor.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px' onclick='mode(1)' draggable='false'></button>
                         <div style="width:10px"></div>
-                        <button title='Save Circuit' style='background-color:white;width:35px;height:35px;padding:0;margin:0;border-radius:5px'><img src="images/other/save.svg" /></button>
-                        <button title='Load Circuit' style='background-color:white;width:35px;height:35px;padding:0;margin:0;border-radius:5px'><img src="images/other/load.svg" /></button>
-                        <button title='Delete Circuit' style='background-color:white;width:35px;height:35px;padding:0;margin:0;border-radius:5px'><img src="images/other/trash.svg" /></button>
+                        <button class='toolbar-button' title='Save Circuit' style='background-image:url("images/other/save.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px' onclick='save()' draggable='false'></button>
+                        <button class='toolbar-button' title='Load Circuit' style='background-image:url("images/other/load.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px' onclick='load()' draggable='false'></button>
+                        <button class='toolbar-button' title='Delete Circuit' style='background-image:url("images/other/trash.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px' onclick='trash()' draggable='false'></button>
+                        <!-- <button class='toolbar-button' title='Screenshot Circuit' style='background-image:url("images/other/camera.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px' onclick='image()' draggable='false'></button> -->
                     </ul>
                     <div class="d-flex">
                         <input class="form-control me-3" type="search" placeholder="Search Components" aria-label="Search" style='width:300px'>
@@ -41,9 +43,8 @@
         </nav>
 
         <div id="body" style="height:100%;display:grid;grid-template-columns:auto 5px 340px;flex:1 1 auto;overflow:hidden">
-            <div id='dropwindow' style="overflow:hidden">
-                <div id="simulation-window" style="background-color:none;z-index:-2;position:relative">
-                
+            <div id='dropwindow' style="overflow:hidden;z-index:0">
+                <div id="simulation-window" style="background-color:none;z-index:-1;position:relative">
                 </div>
             </div>
             <div style="background-color:#333"></div>
@@ -53,13 +54,13 @@
                         <button class="accordion-control">Inputs</button>
                         <div class="accordion-panel" style="display:block">
                             <div style="display:grid;grid-template-columns:150px 150px; gap:10px">
-                                <div id='button' class='INPUT' style="display:flex;flex-direction:column;justify-content:center">
+                                <div id='button' style="display:flex;flex-direction:column;justify-content:center">
                                     <div class="draggable" id="button" style="margin:auto" draggable="true">
                                         <div class="body button low"></div>
                                     </div>
                                     <div style="margin:auto">Button</div>
                                 </div>
-                                <div id="switch" class='INPUT' style="display:flex;flex-direction:column;justify-content:center">
+                                <div id="switch" style="display:flex;flex-direction:column;justify-content:center">
                                     <div class="draggable" id="switch" style="margin:auto" draggable="true">
                                         <div class="body switch low">
                                             <div class='top'></div><div class='bottom'></div>
@@ -67,13 +68,13 @@
                                     </div>
                                     <div style="margin:auto">Switch</div>
                                 </div>
-                                <div id="vcc" class='INPUT' style="display:flex;flex-direction:column;justify-content:center">
+                                <div id="vcc" style="display:flex;flex-direction:column;justify-content:center">
                                     <div class="draggable" id="vcc" style="margin:auto" draggable="true">
                                         <div class="body const high">1</div>
                                     </div>
                                     <div style="margin:auto">High</div>
                                 </div>
-                                <div id="gnd" class='INPUT' style="display:flex;flex-direction:column;justify-content:center">
+                                <div id="gnd" style="display:flex;flex-direction:column;justify-content:center">
                                     <div class="draggable" id="gnd" style="margin:auto" draggable="true">
                                         <div class="body const low">0</div>
                                     </div>
@@ -86,7 +87,7 @@
                         <button class="accordion-control">Outputs</button>
                         <div class="accordion-panel" style="display:block">
                             <div style="display:grid;grid-template-columns: 150px 150px; gap:10px">
-                                <div id='led' class='OUTPUT' style="display:flex;flex-direction:column;justify-content:center">
+                                <div id='led' style="display:flex;flex-direction:column;justify-content:center">
                                     <div class="draggable" id="led" style="margin:auto" draggable="true">
                                         <div class="body led low"></div>
                                     </div>
@@ -99,32 +100,32 @@
                         <button class="accordion-control">Gates</button>
                         <div class="accordion-panel" style="display:block">
                             <div style="display:grid;grid-template-columns: 150px 150px; gap:10px">
-                                <div id='not-gate' class='GATE' style="display:flex;flex-direction:column;justify-content:center">
-                                    <div class="draggable" id="not" style="margin:auto" draggable="true"><img src="images/gates/NOT.svg" style="height:50px"/></div>
+                                <div id ='not-gate' style="display:flex;flex-direction:column;justify-content:center">
+                                    <div id="not" style="margin:auto"><img class='draggable' src="images/gates/NOT.svg" style="height:50px" draggable="true"/></div>
                                     <div style="margin:auto">NOT</div>
                                 </div>
-                                <div id="and-gate" class='GATE' style="display:flex;flex-direction:column;justify-content:center">
-                                    <div class="draggable" id="and" style="margin:auto" draggable="true"><img src="images/gates/AND.svg" style="height:50px"/></div>
+                                <div id="and-gate" style="display:flex;flex-direction:column;justify-content:center">
+                                    <div id="and" style="margin:auto"><img class='draggable' src="images/gates/AND.svg" style="height:50px" draggable="true"/></div>
                                     <div style="margin:auto">AND</div>
                                 </div>
-                                <div id="or-gate" class='GATE' style="display:flex;flex-direction:column;justify-content:center">
-                                    <div class="draggable" id="or" style="margin:auto" draggable="true"><img src="images/gates/OR.svg" style="height:50px"/></div>
+                                <div id="or-gate" style="display:flex;flex-direction:column;justify-content:center">
+                                    <div id="or" style="margin:auto"><img class='draggable' src="images/gates/OR.svg" style="height:50px" draggable="true"/></div>
                                     <div style="margin:auto">OR</div>
                                 </div>
-                                <div id='nand-gate' class='GATE' style="display:flex;flex-direction:column;justify-content:center">
-                                    <div class="draggable" id="nand" style="margin:auto" draggable="true"><img src="images/gates/NAND.svg" style="height:50px"/></div>
+                                <div id='nand-gate' style="display:flex;flex-direction:column;justify-content:center">
+                                    <div id="nand" style="margin:auto"><img class="draggable" src="images/gates/NAND.svg" style="height:50px" draggable="true"/></div>
                                     <div style="margin:auto">NAND</div>
                                 </div>
-                                <div id="nor-gate" class='GATE' style="display:flex;flex-direction:column;justify-content:center">
-                                    <div class="draggable" id="nor" style="margin:auto" draggable="true"><img src="images/gates/NOR.svg" style="height:50px"/></div>
+                                <div id="nor-gate" style="display:flex;flex-direction:column;justify-content:center">
+                                    <div id="nor" style="margin:auto"><img class="draggable" src="images/gates/NOR.svg" style="height:50px" draggable="true"/></div>
                                     <div style="margin:auto">NOR</div>
                                 </div>
-                                <div id="xor-gate" class='GATE' style="display:flex;flex-direction:column;justify-content:center">
-                                    <div class="draggable" id="xor" style="margin:auto" draggable="true"><img src="images/gates/XOR.svg" style="height:50px"/></div>
+                                <div id="xor-gate" style="display:flex;flex-direction:column;justify-content:center">
+                                    <div id="xor" style="margin:auto"><img class="draggable" src="images/gates/XOR.svg" style="height:50px" draggable='true'/></div>
                                     <div style="margin:auto">XOR</div>
                                 </div>
-                                <div id="xnor-gate" class='GATE' style="display:flex;flex-direction:column;justify-content:center;">
-                                    <div class="draggable" id="xnor" style="margin:auto" draggable="true"><img src="images/gates/XNOR.svg" style="height:50px"/></div>
+                                <div id="xnor-gate" style="display:flex;flex-direction:column;justify-content:center;" draggable='false'>
+                                    <div id="xnor" style="margin:auto"><img class="draggable" src="images/gates/XNOR.svg" style="height:50px" draggable="true"/></div>
                                     <div style="margin:auto">XNOR</div>
                                 </div>
                             </div>

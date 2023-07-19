@@ -7,6 +7,17 @@
     width: 152px;
     align-items: center;
 }
+#simulation-window .body:hover {
+    cursor:grab;
+}
+#simulation-window .body:active {
+    cursor:grabbing;
+}
+#simulation-window .body:focus {
+    filter: drop-shadow(0 0 3px rgb(255,25,25));
+}
+
+
 .input {
     position: absolute;
     display: grid;
@@ -120,7 +131,17 @@
     width:20px;
     height:20px;
     border-radius: 25px;
-    border: 3px solid #000
+    border: 3px solid #000;
+    z-index:100;
+}
+.connector:hover {
+    transition:0.05s;
+    transform:scale(1.2);
+    cursor:pointer;
+}
+.connector:focus {
+    transform:scale(1.2);
+    filter: drop-shadow(0 0 3px rgb(255,25,25));
 }
 
 .off {
