@@ -13,9 +13,6 @@
 #simulation-window .body:active {
     cursor:grabbing;
 }
-#simulation-window .body:focus {
-    filter: drop-shadow(0 0 3px rgb(255,25,25));
-}
 
 
 .input {
@@ -106,7 +103,7 @@
     text-indent: 7px;
 }
 
-.select {
+.selected {
     filter: drop-shadow(0 0 3px rgb(255,25,25));
 }
 

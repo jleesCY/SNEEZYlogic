@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" style="height:100%;margin:0">
+    <head>
+        <title>SNEEZYhelp</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+        <link href="../css/index.css" rel="stylesheet">
+        
+    </head>
+    <body style="height:100%;width:100%;background-color:rgb(30,30,30);font-family:monospace;color:white;">
+        <div style="display:grid;grid-template-rows:auto 30px;height:100%">
+            <div>
+                <div><strong style="font-size:40pt;color:white">SNEEZY</strong><span style="color:rgb(255,100,100);font-size:36pt">help</span></div>
+                <h3 style='margin:0'>\Interface\</h3>
+                <h3 style='margin:0'>\Toolbar\</h3>
+                    <ul>
+                        <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
+                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/undo.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <span>UNDO - Undoes the last action on each press</span>
+                        </li>
+                        <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
+                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/redo.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <span>REDO - Redoes the last undone action on each press</span>
+                        </li>
+                        <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
+                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/pan.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <span>PAN - Enables workspace panning. Circuit interaction is disabled</span>
+                        </li>
+                        <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
+                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/cursor.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <span>EDIT - Enables circuit editing. Panning is disabled</span>
+                        </li>
+                        <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
+                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/save.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <span>SAVE - Saves the current circuit into a loadable .json file</span>
+                        </li>
+                        <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
+                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/load.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <span>LOAD - Loads the provided .json file into the workspace</span>
+                        </li>
+                        <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
+                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/trash.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <span>DELETE - Deletes the entire circuit from the workspace after confirmation</span>
+                        </li>
+                        <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
+                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/help.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <span>HELP - Redirects to the help page for help with the simulator</span>
+                        </li>
+                    </ul>
+                <h3 style='margin:0'>\Keyboard Controls\</h3>
+                <ul>
+                    <li style="margin:0">
+                        This is where
+                    </li>
+                    <li style="margin:0">
+                        Keyboard information will go
+                    </li>
+                </ul>
+            </div>
+            <div style="display:grid;grid-template-columns:auto auto;">
+                <div style="text-align:left;padding-left:10px">Copyright 2023 by Joshua Lees. All rights reserved</div>
+                <div style="text-align:right;padding-right:10px">v0.1.0 (development)</div>
+            </div>
+        </div>
+
+        <script src="js/help.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+        
+    </body>
+</html>

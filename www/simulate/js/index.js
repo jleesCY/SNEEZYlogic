@@ -45,8 +45,18 @@ let history = [{}]
 let dropzone = document.querySelector("#dropwindow")
 let scale = 1
 let selectedId = -1
+let pressedKeys = {}
+
+let mousedown = false
 
 let navMode = 1
+
+let selectBox = document.createElement('div')
+selectBox.id = 'selectbox'
+selectBox.style.position = 'absolute'
+selectBox.style.border = '2px solid rgb(227, 80, 80)'
+selectBox.style.backgroundColor = 'rgba(227, 80, 80, 0.2)'
+selectBox.style.borderRadius = '3px'
 
 let sim = document.querySelector("#simulation-window")
 let instance = panzoom(sim,{
@@ -158,7 +168,11 @@ let trash = () => {
 }
 
 let image = () => {
+    
+}
 
+let help = () => {
+    window.open('help.html', '_blank');
 }
 
 $(function(){
@@ -173,10 +187,26 @@ $(function(){
 
     document.body.addEventListener('keyup', () => {
         if (event.key === "Delete") {
-            delete components[selectedId]
-            refresh()
+            for (elem of document.querySelectorAll('.selected')) {
+                if (!elem.classList.value.includes('connector')) {
+                    let body = elem.parentElement
+                    let id
+                    if (body.id) {
+                        id = body.id
+                        document.querySelector('#simulation-window').removeChild(body)
+                    }
+                    else {
+                        document.querySelector('#simulation-window').removeChild(body.parentElement)
+                        id = body.parentElement.id
+                    }
+                    delete components[id]
+                }
+            }
         }
     })
+
+    window.onkeyup = function(e) { pressedKeys[e.keyCode] = false; }
+    window.onkeydown = function(e) { pressedKeys[e.keyCode] = true; }
 
     updateMode()
 })
@@ -191,13 +221,7 @@ let refresh = () => {
         component.innerHTML = compHTML[components[id].type]
         component.addEventListener('dragstart', simDragStart)
         component.addEventListener('click', () => {
-            if (categories[components[id].type] == 'gate') {
-                selectedId = event.target.parentElement.parentElement.id
-            }
-            else {
-                selectedId = event.target.parentElement.id
-            }
-            console.log(selectedId)
+            event.target.classList.add('selected')
         })
         sim.appendChild(component)
     }
@@ -211,13 +235,7 @@ let append = (id) => {
     component.innerHTML = compHTML[components[id].type]
     component.addEventListener('dragstart', simDragStart)
     component.addEventListener('click', () => {
-        if (categories[components[id].type] == 'gate') {
-            selectedId = event.target.parentElement.parentElement.id
-        }
-        else {
-            selectedId = event.target.parentElement.id
-        }
-        console.log(selectedId)
+        event.target.classList.add('selected')
     })
     sim.appendChild(component)
 }
@@ -228,6 +246,11 @@ document.querySelector("#side-panel").addEventListener('pointerdown', () => {
 document.addEventListener('pointerup', () => {
     if (navMode == 0) {
         instance.resume()
+    }
+    if (!pressedKeys[17] && navMode == 1 && event.y > document.querySelector("#navbar").getBoundingClientRect().height) {
+        for (elem of document.querySelectorAll('.selected')) {
+            elem.classList.remove('selected')
+        }
     }
 })
 
@@ -269,8 +292,6 @@ dropzone.addEventListener('drop', () => {
     else {
         console.log('dragging',components[dropData['type']])
     }
-
-    
 })
 
 instance.on('transform', () => {
