@@ -49,6 +49,9 @@ let pressedKeys = {}
 
 let mousedown = false
 
+let drawWire = false
+let wireOrigin = null
+
 let navMode = 1
 
 let selectBox = document.createElement('div')
@@ -63,6 +66,7 @@ let instance = panzoom(sim,{
     smoothScroll: false,
     zoomSpeed: zoom
 })
+
 instance.pause()
 
 
@@ -93,6 +97,7 @@ let updateMode = () => {
         document.querySelector('#edit-button').setAttribute('style','background-color:none;background-image:url("images/other/cursor.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
         instance.resume()
         document.body.style.cursor = 'all-scroll';
+        /*
         for (item of document.querySelectorAll(".draggable")) {
             item.setAttribute('draggable', 'false')
         }
@@ -105,12 +110,14 @@ let updateMode = () => {
         for (item of document.querySelectorAll(".light")) {
             item.style.zIndex = '-200'
         }
+        */
     }
     else {
         document.querySelector('#pan-button').setAttribute('style','background-color:none;background-image:url("images/other/pan.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
         document.querySelector('#edit-button').setAttribute('style','background-color:rgb(227, 80, 80);background-image:url("images/other/cursor.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
         instance.pause()
         document.body.style.cursor = 'default';
+        /*
         for (item of document.querySelectorAll(".draggable")) {
             item.setAttribute('draggable', 'true')
         }
@@ -123,6 +130,7 @@ let updateMode = () => {
         for (item of document.querySelectorAll(".light")) {
             item.style.zIndex = '1'
         }
+        */
     }
 }
 
@@ -240,16 +248,88 @@ let append = (id) => {
     sim.appendChild(component)
 }
 
+let  getOffset = (el) => {
+    var rect = el.getBoundingClientRect();
+    return {
+        left: (rect.left - sim.getBoundingClientRect().x)/scale,
+        top: (rect.top - sim.getBoundingClientRect().y)/scale,
+        width: rect.width/scale || el.offsetWidth/scale,
+        height: rect.height/scale || el.offsetHeight/scale
+    };
+}
+
+let connect = (div1, div2, color, thickness) => { // draw a line connecting elements
+    var off1 = getOffset(div1);
+    var off2 = getOffset(div2);
+
+    /*
+    off1.left -= 10/scale
+    off1.top -= 10/scale
+
+    off2.left -= 10/scale
+    off2.top += 10/scale
+    */
+
+    // bottom right
+    var x1 = off1.left + off1.width - 10;
+    var y1 = off1.top + off1.height - 10;
+    // top right
+    var x2 = off2.left + off2.width - 10;
+    var y2 = off2.top + 10;
+    // distance
+    var length = Math.sqrt((((x2-x1) * (x2-x1)) + ((y2-y1) * (y2-y1))));
+    // center
+    var cx = ((x1 + x2) / 2) - (length / 2);
+    var cy = ((y1 + y2) / 2) - (thickness / 2);
+
+    console.log(cx,cy)
+    // angle
+    var angle = Math.atan2((y1-y2),(x1-x2))*(180/Math.PI);
+    // make hr
+    var htmlLine = "<div class='wire' style='z-index:-10;padding:0px; margin:0px; height:" + thickness + "px; background-color:" + color + "; line-height:1px; position:absolute; left:" + cx + "px; top:" + cy + "px; width:" + length + "px; -moz-transform:rotate(" + angle + "deg); -webkit-transform:rotate(" + angle + "deg); -o-transform:rotate(" + angle + "deg); -ms-transform:rotate(" + angle + "deg); transform:rotate(" + angle + "deg);' />";
+    //
+    // alert(htmlLine);
+    document.querySelector('#simulation-window').innerHTML += htmlLine;
+}
+
 document.querySelector("#side-panel").addEventListener('pointerdown', () => {
     instance.pause()
 })
+
 document.addEventListener('pointerup', () => {
+
     if (navMode == 0) {
         instance.resume()
     }
-    if (!pressedKeys[17] && navMode == 1 && event.y > document.querySelector("#navbar").getBoundingClientRect().height) {
+
+    if (!pressedKeys[17] && navMode == 1 && event.y > document.querySelector("#navbar").getBoundingClientRect().height || event.target.classList.value.includes('connector')) {
         for (elem of document.querySelectorAll('.selected')) {
             elem.classList.remove('selected')
+        }
+    }
+
+    if (!event.target.classList.value.includes('connector')) {
+        drawWire = false
+        wireOrigin = null
+    }
+
+    if (event.target.classList.value.includes('connector')) {
+        if (drawWire) {
+            if (event.target != wireOrigin) {
+                // connect the connectors
+                if (wireOrigin.getBoundingClientRect().left < event.target.getBoundingClientRect().left) {
+                    connect(wireOrigin,event.target,'#000',4)
+                }
+                else {
+                    connect(event.target,wireOrigin,'#000',4)
+                }
+                wireOrigin = null
+                drawWire = false
+            }
+        }
+        else {
+            drawWire = true
+            wireOrigin = event.target
         }
     }
 })

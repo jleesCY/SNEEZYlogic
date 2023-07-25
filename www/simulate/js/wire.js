@@ -1,5 +1,0 @@
-class Wire {
-    constructor(start) {
-        
-    }
-}
