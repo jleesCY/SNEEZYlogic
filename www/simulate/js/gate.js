@@ -1,81 +1,125 @@
 class Gate {
-    constructor(type) {
-        this.type = this.getType(type)
-        this.x = 0
-        this.y = 0
-        this.inp1 = null
-        this.inp2 =  null
-        this.out =  null
+    type = ""
+    in1 = null
+    in2 = null
+    out = []
+    x = 0
+    y = 0
+
+    constructor(type, x, y) {
+        this.type = type
+        this.in1 = null
+        this.in2 = null
+        this.out =  []
+        this.x = x
+        this.y = y
     }
-    getType = (t) => {
-        if (t == 'not') {
-            return 0
+
+    //
+    // ----- GETTERS -----
+    //
+    get getType() {
+        return this.type
+    }
+    get getIn1() {
+        return this.in1
+    }
+    get getIn2() {
+        return this.in2
+    }
+    get getOut() {
+        return this.out
+    }
+    get getX() {
+        return this.x
+    }
+    get getY() {
+        return this.y
+    }
+    get getHTML() {
+        if (this.type == 'not') {
+            return '<div class="in-1"><div class="connector off" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="images/gates/NOT.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>'
         }
-        else if (t == 'and') {
-            return 1
+        else if (this.type == 'and') {
+            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="images/gates/AND.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>'
         }
-        else if (t == 'or') {
-            return 2
+        else if (this.type == 'or') {
+            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="images/gates/OR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>'
         }
-        else if (t == 'nand') {
-            return 3
+        else if (this.type == 'nand') {
+            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nand" tabindex="1"><img src="images/gates/NAND.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>'
         }
-        else if (t == 'nor') {
-            return 4
+        else if (this.type == 'nor') {
+            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nor" tabindex="1"><img src="images/gates/NOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>'
         }
-        else if (t == 'xor') {
-            return 5
+        else if (this.type == 'xor') {
+            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xor" tabindex="1"><img src="images/gates/XOR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>'
         }
-        else if (t == 'xnor') {
-            return 6
+        else if (this.type == 'xnor') {
+            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xnor" tabindex="1"><img src="images/gates/XNOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>'
         }
     }
 
-    getHTML = () => {
-        if (this.type == 0) {
-            return '<div class="input-1"><div class="connector off"></div></div><div class="body not"><img src="images/gates/NOT.svg"></div><div class="connector on"></div>'
-        }
-        else if (this.type == 1) {
-            return '<div class="input-2"><div class="connector off"></div><div class="connector off"></div></div><div class="body and"><img src="images/gates/AND.svg"></div><div class="connector off"></div>'
-        }
-        else if (this.type == 2) {
-            return '<div class="input-2"><div class="connector off"></div><div class="connector off"></div></div><div class="body or"><img src="images/gates/OR.svg"></div><div class="connector off"></div>'
-        }
-        else if (this.type == 3) {
-            return '<div class="input-2"><div class="connector off"></div><div class="connector off"></div></div><div class="body nand"><img src="images/gates/NAND.svg"></div><div class="connector on"></div>'
-        }
-        else if (this.type == 4) {
-            return '<div class="input-2"><div class="connector off"></div><div class="connector off"></div></div><div class="body nor"><img src="images/gates/NOR.svg"></div><div class="connector on"></div>'
-        }
-        else if (this.type == 5) {
-            return '<div class="input-2"><div class="connector off"></div><div class="connector off"></div></div><div class="body xor"><img src="images/gates/XOR.svg"></div><div class="connector off"></div>'
-        }
-        else if (this.type == 6) {
-            return '<div class="input-2"><div class="connector off"></div><div class="connector off"></div></div><div class="body xnor"><img src="images/gates/XNOR.svg"></div><div class="connector on"></div>'
-        }
+    //
+    // ----- SETTERS -----
+    //
+    set setIn1(wire) {
+        this.in1 = wire
+    }
+    set setIn2(wire) {
+        this.in2 = wire
+    }
+    set setOut(wires) {
+        this.out = wires
+    }
+    set addOut(wire) {
+        this.out.push(wire)
+    }
+    set setX(x) {
+        this.x = x
+    }
+    set setY(y) {
+        this.y = y
     }
 
+    //
+    // ----- OTHER -----
+    //
     calcOutput = () => {
-        if (this.type == 0) {
-            this.out.setValue(!this.inp1.getValue())
+        if (this.type == 'not') {
+            for (let wire of this.out) {
+                wire.setValue = (!this.in1.getValue)
+            }
         }
-        else if (this.type == 1) {
-            this.out.setValue(this.input1.getValue() && this.input2.getValue())
+        else if (this.type == 'and') {
+            for (let wire of this.out) {
+                wire.setValue = (this.in1.getValue && this.in2.getValue)
+            }
         }
-        else if (this.type == 2) {
-            this.out.setValue(this.input[0].getValue() || this.input[1].getValue())
+        else if (this.type == 'or') {
+            for (let wire of this.out) {
+                wire.setValue = (this.in1.getValue || this.in2.getValue)
+            }
         }
-        else if (this.type == 3) {
-            this.out.setValue(!(this.input1.getValue() && this.input2.getValue()))
+        else if (this.type == 'nand') {
+            for (let wire of this.out) {
+                wire.setValue = (!(this.in1.getValue && this.in2.getValue))
+            }
         }
-        else if (this.type == 4) {
-            this.out.setValue(!(this.input1.getValue() || this.input2.getValue()))
+        else if (this.type == 'nor') {
+            for (let wire of this.out) {
+                wire.setValue = (!(this.in1.getValue || this.in2.getValue))
+            }
         }
-        else if (this.type == 5) {
-            this.out.setValue(this.input1.getValue() ^ this.input2.getValue())
+        else if (this.type == 'xor') {
+            for (let wire of this.out) {
+                wire.setValue = (this.in1.getValue ^ this.in2.getValue)
+            }
         }
-        else if (this.type == 6) {
-            this.out.setValue(!(this.input1.getValue() ^ this.input2.getValue()))
+        else if (this.type == 'xnor') {
+            for (let wire of this.out) {
+                wire.setValue = (!(this.in1.getValue ^ this.in2.getValue))
+            }
         }
     }
 }

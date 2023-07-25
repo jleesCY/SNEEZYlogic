@@ -7,13 +7,13 @@ $('.accordion').on('click', '.accordion-control', function(e){
 })
 
 let compHTML = {
-    'and':  '<div class="input-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="images/gates/AND.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'or':   '<div class="input-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="images/gates/OR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'not':  '<div class="input-1"><div class="connector off" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="images/gates/NOT.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
-    'nand': '<div class="input-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nand" tabindex="1"><img src="images/gates/NAND.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
-    'nor':  '<div class="input-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nor" tabindex="1"><img src="images/gates/NOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
-    'xor':  '<div class="input-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xor" tabindex="1"><img src="images/gates/XOR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'xnor': '<div class="input-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xnor" tabindex="1"><img src="images/gates/XNOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
+    'and':  '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="images/gates/AND.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
+    'or':   '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="images/gates/OR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
+    'not':  '<div class="in-1"><div class="connector off" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="images/gates/NOT.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
+    'nand': '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nand" tabindex="1"><img src="images/gates/NAND.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
+    'nor':  '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nor" tabindex="1"><img src="images/gates/NOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
+    'xor':  '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xor" tabindex="1"><img src="images/gates/XOR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
+    'xnor': '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xnor" tabindex="1"><img src="images/gates/XNOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
     'button':   '<div class="body button low" tabindex="1" draggable="true"></div><div class="connector off" tabindex="1"></div>',
     'switch':   '<div class="body switch low" tabindex="1" draggable="true"><div class="top"></div><div class="bottom"></div></div><div class="connector off" tabindex="1"></div>',
     'gnd':  '<div class="body const low" tabindex="1" draggable="true">0</div><div class="connector off" tabindex="1"></div>',
@@ -35,6 +35,8 @@ let categories = {
     'gnd': 'input',
     'led': 'light',
 }
+
+let connTypes = ['gate', 'input', 'light']
 
 let zoom = 0.065
 let yoff = document.querySelector("#navbar").getBoundingClientRect().height
@@ -238,9 +240,9 @@ let refresh = () => {
 let append = (id) => {
     let component = document.createElement('div')
     component.classList.add(categories[components[id].type])
-    component.setAttribute('style', 'top:' + components[id].location.y + 'px;left:' + components[id].location.x + 'px;')
+    component.setAttribute('style', 'top:' + components[id].y + 'px;left:' + components[id].x + 'px;')
     component.id = id
-    component.innerHTML = compHTML[components[id].type]
+    component.innerHTML = components[id].getHTML
     component.addEventListener('dragstart', simDragStart)
     component.addEventListener('click', () => {
         event.target.classList.add('selected')
@@ -316,15 +318,27 @@ document.addEventListener('pointerup', () => {
     if (event.target.classList.value.includes('connector')) {
         if (drawWire) {
             if (event.target != wireOrigin) {
-                // connect the connectors
-                if (wireOrigin.getBoundingClientRect().left < event.target.getBoundingClientRect().left) {
-                    connect(wireOrigin,event.target,'#000',4)
+                oP = wireOrigin
+                while (!connTypes.some(el => oP.classList.value.includes(el))) {
+                    oP = oP.parentElement
                 }
-                else {
-                    connect(event.target,wireOrigin,'#000',4)
+                dP = event.target
+                while (!connTypes.some(el => dP.classList.value.includes(el))) {
+                    dP = dP.parentElement
                 }
-                wireOrigin = null
-                drawWire = false
+
+                if (oP != dP) {
+                    // connect the connectors
+                    if (wireOrigin.getBoundingClientRect().left < event.target.getBoundingClientRect().left) {
+                        connect(wireOrigin,event.target,'#000',4)
+                    }
+                    else {
+                        connect(event.target,wireOrigin,'#000',4)
+                    }
+                    console.log(oP.id,"->",dP.id)
+                    wireOrigin = null
+                    drawWire = false
+                }
             }
         }
         else {
@@ -353,18 +367,7 @@ dropzone.addEventListener('drop', () => {
         }
         loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
 
-        components[elementId] = {
-            type: dropData['type'],
-            location: {
-                x: loc_x,
-                y: loc_y
-            },
-            inp1:   {id: -1, val: false},
-            inp2:   {id: -1, val: false},
-            out:    {ids: [-1], val: false}
-        }
-        history.push(JSON.parse(JSON.stringify(components)))
-        historyIdx = history.length
+        components[elementId] = new Gate(dropData['type'], loc_x, loc_y)
 
         append(elementId)
         elementId += 1
