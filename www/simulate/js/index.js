@@ -112,6 +112,10 @@ let updateMode = () => {
         document.body.style.cursor = 'all-scroll';
         for (id of Object.keys(components)) {
             components[id].disableSelect()
+            if (categories[components[id].getType] == 'input') {
+                console.log(components[id])
+                components[id].disablePress()
+            }
         }
     }
     // edit
@@ -122,6 +126,10 @@ let updateMode = () => {
         document.body.style.cursor = 'default';
         for (id of Object.keys(components)) {
             components[id].enableSelect()
+            if (categories[components[id].getType] == 'input') {
+                console.log(components[id])
+                components[id].enablePress()
+            }
         }
     }
 }
@@ -185,7 +193,7 @@ $(function(){
 
     // handler for deleting selected elements from the simulation
     document.body.addEventListener('keyup', () => {
-        if (event.key === "Delete") {
+        if (event.key === "Delete" || event.key === "Backspace") {
             for (id of Object.keys(components)) {
                 if (components[id].selected) {
                     components[id].delete()
@@ -345,6 +353,15 @@ dropzone.addEventListener('drop', () => {
             component.innerHTML = HTML[dropData['type']]
             components[elementId] = new Gate(dropData['type'], loc_x, loc_y, component)
             components[elementId].enableSelect()
+            components[elementId].setN1 = new Connector('in',components[elementId].getDom.children[0].children[0],components[elementId])
+            if (dropData["type"] != 'not') {
+                components[elementId].setN2 = new Connector('in',components[elementId].getDom.children[0].children[1],components[elementId])
+            }
+            else {
+                components[elementId].setN2 = components[elementId].getN1
+            }
+            components[elementId].setNOut = new Connector('out',components[elementId].getDom.children[2],components[elementId])
+            
             sim.appendChild(component)
             elementId += 1
         }
@@ -361,6 +378,8 @@ dropzone.addEventListener('drop', () => {
             component.innerHTML = HTML[dropData['type']]
             components[elementId] = new Input(dropData['type'], loc_x, loc_y, component)
             components[elementId].enableSelect()
+            components[elementId].enablePress()
+            components[elementId].setN = new Connector('out',components[elementId].getDom.children[1],components[elementId])
             sim.appendChild(component)
             elementId += 1
         }

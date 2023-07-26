@@ -3,6 +3,7 @@ class Input {
     out = []
     x = 0
     y = 0
+    n = null
     dom = null
     selected = false
 
@@ -24,6 +25,9 @@ class Input {
     get getOut() {
         return this.out
     }
+    get getN() {
+        return this.n
+    }
     get getX() {
         return this.x
     }
@@ -34,7 +38,7 @@ class Input {
         return this.dom
     }
     get getBody() {
-        return this.dom.children[1].children[0]
+        return this.dom.children[0]
     }
 
     //
@@ -45,6 +49,9 @@ class Input {
     }
     set addOut(wire) {
         this.out.push(wire)
+    }
+    set setN(n) {
+        this.n = n
     }
     set setX(x) {
         this.x = x
@@ -112,5 +119,49 @@ class Input {
     }
     disableSelect = () => {
         this.dom.removeEventListener('dblclick', this.select)
+    }
+    enablePress = () => {
+        if (this.type == 'switch') {
+            this.dom.children[0].addEventListener('pointerup', this.toggle)
+        }
+        else if (this.type == 'button') {
+            this.dom.children[0].addEventListener('pointerdown', this.on)
+            this.dom.children[0].addEventListener('pointerup', this.off)
+        }
+    }
+    disablePress = () => {
+        if (this.type == 'switch') {
+            this.dom.children[0].removeEventListener('pointerup', this.toggle)
+        }
+        else if (this.type == 'button') {
+            this.dom.children[0].removeEventListener('pointerdown', this.on)
+            this.dom.children[0].removeEventListener('pointerup', this.off)
+        }
+    }
+    on = () => {
+        this.dom.children[0].classList.remove('low')
+        this.dom.children[0].classList.add('high')
+        this.n.on()
+        for (let wire of this.out) {
+            wire.setValue = true
+        }
+    }
+    off = () => {
+        this.dom.children[0].classList.remove('high')
+        this.dom.children[0].classList.add('low')
+        this.n.off()
+        for (let wire of this.out) {
+            wire.setValue = false
+        }
+    }
+    toggle = () => {
+        if (this.dom.children[0].classList.value.includes('high')) {
+            this.off()
+            this.n.off()
+        }
+        else {
+            this.on()
+            this.n.on()
+        }
     }
 }
