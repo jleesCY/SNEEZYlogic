@@ -1,5 +1,4 @@
 class Light {
-    type = ""
     i = null
     x = 0
     y = 0
@@ -7,21 +6,19 @@ class Light {
     dom = null
     selected = false
 
-    constructor(type, x, y, dom) {
+    constructor(x, y, dom) {
         this.type = type
         this.dom = dom
         this.x = x
         this.y = y
         this.i = null
+        this.n = null
         this.selected = false
     }
 
     //
     // ----- GETTERS -----
     //
-    get getType() {
-        return this.type
-    }
     get getIn() {
         return this.i
     }
@@ -44,11 +41,8 @@ class Light {
     //
     // ----- SETTERS -----
     //
-    set setOut(wires) {
-        this.out = wires
-    }
-    set addOut(wire) {
-        this.out.push(wire)
+    set setIn(i) {
+        this.i = i
     }
     set setN(n) {
         this.n = n
@@ -67,40 +61,11 @@ class Light {
     // ----- OTHER -----
     //
     calcOutput = () => {
-        if (this.type == 'not') {
-            for (let wire of this.out) {
-                wire.setValue = (!this.in1.getValue)
-            }
+        if (this.i.getValue()) {
+            this.on()
         }
-        else if (this.type == 'and') {
-            for (let wire of this.out) {
-                wire.setValue = (this.in1.getValue && this.in2.getValue)
-            }
-        }
-        else if (this.type == 'or') {
-            for (let wire of this.out) {
-                wire.setValue = (this.in1.getValue || this.in2.getValue)
-            }
-        }
-        else if (this.type == 'nand') {
-            for (let wire of this.out) {
-                wire.setValue = (!(this.in1.getValue && this.in2.getValue))
-            }
-        }
-        else if (this.type == 'nor') {
-            for (let wire of this.out) {
-                wire.setValue = (!(this.in1.getValue || this.in2.getValue))
-            }
-        }
-        else if (this.type == 'xor') {
-            for (let wire of this.out) {
-                wire.setValue = (this.in1.getValue ^ this.in2.getValue)
-            }
-        }
-        else if (this.type == 'xnor') {
-            for (let wire of this.out) {
-                wire.setValue = (!(this.in1.getValue ^ this.in2.getValue))
-            }
+        else {
+            this.off()
         }
     }
     select = () => {
@@ -120,48 +85,14 @@ class Light {
     disableSelect = () => {
         this.dom.removeEventListener('dblclick', this.select)
     }
-    enablePress = () => {
-        if (this.type == 'switch') {
-            this.dom.children[0].addEventListener('pointerup', this.toggle)
-        }
-        else if (this.type == 'button') {
-            this.dom.children[0].addEventListener('pointerdown', this.on)
-            this.dom.children[0].addEventListener('pointerup', this.off)
-        }
-    }
-    disablePress = () => {
-        if (this.type == 'switch') {
-            this.dom.children[0].removeEventListener('pointerup', this.toggle)
-        }
-        else if (this.type == 'button') {
-            this.dom.children[0].removeEventListener('pointerdown', this.on)
-            this.dom.children[0].removeEventListener('pointerup', this.off)
-        }
-    }
     on = () => {
-        this.dom.children[0].classList.remove('low')
-        this.dom.children[0].classList.add('high')
+        this.dom.remove('low')
+        this.dom.add('high')
         this.n.on()
-        for (let wire of this.out) {
-            wire.setValue = true
-        }
     }
     off = () => {
         this.dom.children[0].classList.remove('high')
         this.dom.children[0].classList.add('low')
         this.n.off()
-        for (let wire of this.out) {
-            wire.setValue = false
-        }
-    }
-    toggle = () => {
-        if (this.dom.children[0].classList.value.includes('high')) {
-            this.off()
-            this.n.off()
-        }
-        else {
-            this.on()
-            this.n.on()
-        }
     }
 }

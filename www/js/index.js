@@ -106,8 +106,8 @@ let simDragStart = () => {
 let updateMode = () => {
     // pan
     if (navMode == 0) {
-        document.querySelector('#pan-button').setAttribute('style','background-color:rgb(227, 80, 80);background-image:url("images/other/pan.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
-        document.querySelector('#edit-button').setAttribute('style','background-color:none;background-image:url("images/other/cursor.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
+        document.querySelector('#pan-button').setAttribute('style','background-color:rgb(227, 80, 80);background-image:url("../images/other/pan.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
+        document.querySelector('#edit-button').setAttribute('style','background-color:none;background-image:url("../images/other/cursor.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
         instance.resume()
         document.body.style.cursor = 'all-scroll';
         for (id of Object.keys(components)) {
@@ -120,8 +120,8 @@ let updateMode = () => {
     }
     // edit
     else {
-        document.querySelector('#pan-button').setAttribute('style','background-color:none;background-image:url("images/other/pan.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
-        document.querySelector('#edit-button').setAttribute('style','background-color:rgb(227, 80, 80);background-image:url("images/other/cursor.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
+        document.querySelector('#pan-button').setAttribute('style','background-color:none;background-image:url("../images/other/pan.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
+        document.querySelector('#edit-button').setAttribute('style','background-color:rgb(227, 80, 80);background-image:url("../images/other/cursor.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
         instance.pause()
         document.body.style.cursor = 'default';
         for (id of Object.keys(components)) {
@@ -175,7 +175,7 @@ let image = () => {
 
 // handler for opening the help window
 let help = () => {
-    window.open('help.html', '_blank');
+    window.open('../help', '_blank');
 }
 
 // hander for when the document loads
@@ -239,10 +239,10 @@ let connect = (div1, div2, color, thickness) => { // draw a line connecting elem
     var x1 = off1.left + off1.width - 10;
     var y1 = off1.top + off1.height - 10;
     // top right
-    var x2 = off2.left + off2.width - 10;
+    var x2 = off2.left + off2.width - 12;
     var y2 = off2.top + 10;
     // distance
-    var length = Math.sqrt((((x2-x1) * (x2-x1)) + ((y2-y1) * (y2-y1))));
+    var length = Math.sqrt((((x2-x1) * (x2-x1)) + ((y2-y1) * (y2-y1)))/scale);
     // center
     var cx = ((x1 + x2) / 2) - (length / 2);
     var cy = ((y1 + y2) / 2) - (thickness / 2);
@@ -277,8 +277,18 @@ document.addEventListener('click', () => {
     // deselects components only if (a) CTRL is not being held, and (b) the click is below the navigation bar
     if (!pressedKeys[17] && event.y > document.querySelector("#navbar").getBoundingClientRect().height) {
         for (id of Object.keys(components)) {
-            if (event.target != components[id].getDom && event.target != components[id].getBody ) {
+            if (event.target != components[id].getDom && event.target != components[id].getDom ) {
                 components[id].deselect()
+                if (categories[components[id].getType] == "gate" && !event.target.classList.value.includes('connector')) {
+                    console.log('gate')
+                    components[id].getN1.deselect()
+                    components[id].getN2.deselect()
+                    components[id].getNOut.deselect()
+                }
+                else if (categories[components[id].getType] == "input" && !event.target.classList.value.includes('connector')) {
+                    console.log('input')
+                    components[id].getN.deselect()
+                }
             }
         }
     }
@@ -307,12 +317,7 @@ document.addEventListener('click', () => {
                 // just so long as the connectors are not a part of the same component
                 if (oP != dP) {
                     // connect the connectors
-                    if (wireOrigin.getBoundingClientRect().left < event.target.getBoundingClientRect().left) {
-                        connect(wireOrigin,event.target,'#000',4)
-                    }
-                    else {
-                        connect(event.target,wireOrigin,'#000',4)
-                    }
+                    connect(wireOrigin,event.target,'#000',4)
                     console.log(oP.id,"->",dP.id)
                     wireOrigin = null
                     drawWire = false
@@ -322,6 +327,7 @@ document.addEventListener('click', () => {
         // begin connection process
         else {
             drawWire = true
+
             wireOrigin = event.target
         }
         // deselect any components if a connector was clicked
@@ -354,21 +360,22 @@ dropzone.addEventListener('drop', () => {
             components[elementId] = new Gate(dropData['type'], loc_x, loc_y, component)
             components[elementId].enableSelect()
             components[elementId].setN1 = new Connector('in',components[elementId].getDom.children[0].children[0],components[elementId])
+            components[elementId].getN1.enableSelect()
             if (dropData["type"] != 'not') {
                 components[elementId].setN2 = new Connector('in',components[elementId].getDom.children[0].children[1],components[elementId])
+                components[elementId].getN2.enableSelect()
             }
             else {
                 components[elementId].setN2 = components[elementId].getN1
             }
             components[elementId].setNOut = new Connector('out',components[elementId].getDom.children[2],components[elementId])
+            components[elementId].getNOut.enableSelect()
             
             sim.appendChild(component)
             elementId += 1
         }
         // if the component is an input
         else if (categories[dropData['type']] == 'input') {
-            console.log('input',dropData['type'])
-
             let loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff']
             let loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
             let component = document.createElement('div')
@@ -380,13 +387,26 @@ dropzone.addEventListener('drop', () => {
             components[elementId].enableSelect()
             components[elementId].enablePress()
             components[elementId].setN = new Connector('out',components[elementId].getDom.children[1],components[elementId])
+            components[elementId].getN.enableSelect()
             sim.appendChild(component)
             elementId += 1
         }
         // if the component is a light
         else if (categories[dropData['type']] == 'light') {
-            console.log('light',dropData['type'])
-
+            let loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff']
+            let loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
+            let component = document.createElement('div')
+            component.classList.add(categories[dropData['type']])
+            component.setAttribute('style', 'top:' + loc_y + 'px;left:' + loc_x + 'px;')
+            component.id = elementId
+            component.innerHTML = HTML[dropData['type']]
+            components[elementId] = new Light(loc_x, loc_y, component)
+            components[elementId].enableSelect()
+            components[elementId].enablePress()
+            components[elementId].setN = new Connector('in',components[elementId].getDom.children[1],components[elementId])
+            components[elementId].getN.enableSelect()
+            sim.appendChild(component)
+            elementId += 1
         }
     }
     else {

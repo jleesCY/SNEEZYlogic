@@ -13,6 +13,7 @@ class Input {
         this.x = x
         this.y = y
         this.out =  []
+        this.n = null
         this.selected = false
     }
 
@@ -66,43 +67,6 @@ class Input {
     //
     // ----- OTHER -----
     //
-    calcOutput = () => {
-        if (this.type == 'not') {
-            for (let wire of this.out) {
-                wire.setValue = (!this.in1.getValue)
-            }
-        }
-        else if (this.type == 'and') {
-            for (let wire of this.out) {
-                wire.setValue = (this.in1.getValue && this.in2.getValue)
-            }
-        }
-        else if (this.type == 'or') {
-            for (let wire of this.out) {
-                wire.setValue = (this.in1.getValue || this.in2.getValue)
-            }
-        }
-        else if (this.type == 'nand') {
-            for (let wire of this.out) {
-                wire.setValue = (!(this.in1.getValue && this.in2.getValue))
-            }
-        }
-        else if (this.type == 'nor') {
-            for (let wire of this.out) {
-                wire.setValue = (!(this.in1.getValue || this.in2.getValue))
-            }
-        }
-        else if (this.type == 'xor') {
-            for (let wire of this.out) {
-                wire.setValue = (this.in1.getValue ^ this.in2.getValue)
-            }
-        }
-        else if (this.type == 'xnor') {
-            for (let wire of this.out) {
-                wire.setValue = (!(this.in1.getValue ^ this.in2.getValue))
-            }
-        }
-    }
     select = () => {
         this.dom.classList.add('selected')
         this.selected = true

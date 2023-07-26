@@ -132,13 +132,7 @@
     z-index:100;
 }
 .connector:hover {
-    transition:0.05s;
-    transform:scale(1.2);
     cursor:pointer;
-}
-.connector:focus {
-    transform:scale(1.2);
-    filter: drop-shadow(0 0 3px rgb(255,25,25));
 }
 
 .off {
