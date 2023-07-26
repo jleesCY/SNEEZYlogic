@@ -285,7 +285,7 @@ document.addEventListener('click', () => {
                     components[id].getN2.deselect()
                     components[id].getNOut.deselect()
                 }
-                else if (categories[components[id].getType] == "input" && !event.target.classList.value.includes('connector')) {
+                else if ((categories[components[id].getType] == "input" || categories[components[id].getType] == "light")&& !event.target.classList.value.includes('connector')) {
                     console.log('input')
                     components[id].getN.deselect()
                 }
@@ -370,6 +370,8 @@ dropzone.addEventListener('drop', () => {
             }
             components[elementId].setNOut = new Connector('out',components[elementId].getDom.children[2],components[elementId])
             components[elementId].getNOut.enableSelect()
+
+            console.log(component)
             
             sim.appendChild(component)
             elementId += 1
@@ -402,7 +404,6 @@ dropzone.addEventListener('drop', () => {
             component.innerHTML = HTML[dropData['type']]
             components[elementId] = new Light(loc_x, loc_y, component)
             components[elementId].enableSelect()
-            components[elementId].enablePress()
             components[elementId].setN = new Connector('in',components[elementId].getDom.children[1],components[elementId])
             components[elementId].getN.enableSelect()
             sim.appendChild(component)

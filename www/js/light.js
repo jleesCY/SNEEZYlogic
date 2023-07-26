@@ -5,9 +5,10 @@ class Light {
     n = null
     dom = null
     selected = false
+    type = 'led'
 
     constructor(x, y, dom) {
-        this.type = type
+        this.type = 'led'
         this.dom = dom
         this.x = x
         this.y = y
@@ -19,6 +20,9 @@ class Light {
     //
     // ----- GETTERS -----
     //
+    get getType() {
+        return this.type
+    }
     get getIn() {
         return this.i
     }
@@ -61,7 +65,7 @@ class Light {
     // ----- OTHER -----
     //
     calcOutput = () => {
-        if (this.i.getValue()) {
+        if (this.i.getValue) {
             this.on()
         }
         else {
@@ -86,8 +90,8 @@ class Light {
         this.dom.removeEventListener('dblclick', this.select)
     }
     on = () => {
-        this.dom.remove('low')
-        this.dom.add('high')
+        this.dom.children[0].classList.remove('low')
+        this.dom.children[0].classList.add('high')
         this.n.on()
     }
     off = () => {
