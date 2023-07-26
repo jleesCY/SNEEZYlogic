@@ -5,14 +5,18 @@ class Gate {
     out = []
     x = 0
     y = 0
+    dom = null
+    selected = false
 
-    constructor(type, x, y) {
+    constructor(type, x, y, dom) {
         this.type = type
+        this.dom = dom
+        this.x = x
+        this.y = y
         this.in1 = null
         this.in2 = null
         this.out =  []
-        this.x = x
-        this.y = y
+        this.selected = false
     }
 
     //
@@ -36,28 +40,11 @@ class Gate {
     get getY() {
         return this.y
     }
-    get getHTML() {
-        if (this.type == 'not') {
-            return '<div class="in-1"><div class="connector off" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="images/gates/NOT.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>'
-        }
-        else if (this.type == 'and') {
-            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="images/gates/AND.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>'
-        }
-        else if (this.type == 'or') {
-            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="images/gates/OR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>'
-        }
-        else if (this.type == 'nand') {
-            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nand" tabindex="1"><img src="images/gates/NAND.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>'
-        }
-        else if (this.type == 'nor') {
-            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nor" tabindex="1"><img src="images/gates/NOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>'
-        }
-        else if (this.type == 'xor') {
-            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xor" tabindex="1"><img src="images/gates/XOR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>'
-        }
-        else if (this.type == 'xnor') {
-            return '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xnor" tabindex="1"><img src="images/gates/XNOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>'
-        }
+    get getDom() {
+        return this.dom
+    }
+    get getBody() {
+        return this.dom.children[1].children[0]
     }
 
     //
@@ -80,6 +67,9 @@ class Gate {
     }
     set setY(y) {
         this.y = y
+    }
+    set setDom(d) {
+        this.dom = d
     }
 
     //
@@ -121,5 +111,22 @@ class Gate {
                 wire.setValue = (!(this.in1.getValue ^ this.in2.getValue))
             }
         }
+    }
+    select = () => {
+        this.dom.classList.add('selected')
+        this.selected = true
+    }
+    deselect = () => {
+        this.dom.classList.remove('selected')
+        this.selected = false
+    }
+    delete = () => {
+        this.dom.parentElement.removeChild(this.dom)
+    }
+    enableSelect = () => {
+        this.dom.addEventListener('dblclick', this.select)
+    }
+    disableSelect = () => {
+        this.dom.removeEventListener('dblclick', this.select)
     }
 }

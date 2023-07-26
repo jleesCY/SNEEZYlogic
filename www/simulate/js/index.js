@@ -6,7 +6,7 @@ $('.accordion').on('click', '.accordion-control', function(e){
         .slideToggle(); //use slideToggle to show or hide it
 })
 
-let compHTML = {
+let HTML = {
     'and':  '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="images/gates/AND.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
     'or':   '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="images/gates/OR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
     'not':  '<div class="in-1"><div class="connector off" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="images/gates/NOT.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
@@ -21,22 +21,24 @@ let compHTML = {
     'led':  '<div class="body led low" tabindex="1" draggable="true"></div><div class="connector off" tabindex="1"></div>',
 }
 
+let connTypes = ['gate', 'input', 'light']
+
 let categories = {
-    'and': 'gate',
-    'or': 'gate',
-    'not': 'gate',
-    'nand': 'gate',
-    'nor': 'gate',
-    'xor': 'gate',
-    'xnor': 'gate',
-    'button': 'input',
-    'switch': 'input',
-    'vcc': 'input',
-    'gnd': 'input',
-    'led': 'light',
+    'and': connTypes[0],
+    'or': connTypes[0],
+    'not': connTypes[0],
+    'nand': connTypes[0],
+    'nor': connTypes[0],
+    'xor': connTypes[0],
+    'xnor': connTypes[0],
+    'button': connTypes[1],
+    'switch': connTypes[1],
+    'vcc': connTypes[1],
+    'gnd': connTypes[1],
+    'led': connTypes[2],
 }
 
-let connTypes = ['gate', 'input', 'light']
+
 
 let zoom = 0.065
 let yoff = document.querySelector("#navbar").getBoundingClientRect().height
@@ -99,40 +101,18 @@ let updateMode = () => {
         document.querySelector('#edit-button').setAttribute('style','background-color:none;background-image:url("images/other/cursor.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
         instance.resume()
         document.body.style.cursor = 'all-scroll';
-        /*
-        for (item of document.querySelectorAll(".draggable")) {
-            item.setAttribute('draggable', 'false')
+        for (id of Object.keys(components)) {
+            components[id].disableSelect()
         }
-        for (item of document.querySelectorAll(".gate")) {
-            item.style.zIndex = '-200'
-        }
-        for (item of document.querySelectorAll(".input")) {
-            item.style.zIndex = '-200'
-        }
-        for (item of document.querySelectorAll(".light")) {
-            item.style.zIndex = '-200'
-        }
-        */
     }
     else {
         document.querySelector('#pan-button').setAttribute('style','background-color:none;background-image:url("images/other/pan.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
         document.querySelector('#edit-button').setAttribute('style','background-color:rgb(227, 80, 80);background-image:url("images/other/cursor.svg");width:35px;height:35px;padding:0;margin:0;border-radius:5px')
         instance.pause()
         document.body.style.cursor = 'default';
-        /*
-        for (item of document.querySelectorAll(".draggable")) {
-            item.setAttribute('draggable', 'true')
+        for (id of Object.keys(components)) {
+            components[id].enableSelect()
         }
-        for (item of document.querySelectorAll(".gate")) {
-            item.style.zIndex = '1'
-        }
-        for (item of document.querySelectorAll(".input")) {
-            item.style.zIndex = '1'
-        }
-        for (item of document.querySelectorAll(".light")) {
-            item.style.zIndex = '1'
-        }
-        */
     }
 }
 
@@ -171,7 +151,7 @@ let load = () => {
 
 let trash = () => {
     if(confirm("Are you sure you want to delete this circuit?")) {
-        components = []
+        components = {}
         elementId = 0
         refresh()
     }
@@ -197,18 +177,9 @@ $(function(){
 
     document.body.addEventListener('keyup', () => {
         if (event.key === "Delete") {
-            for (elem of document.querySelectorAll('.selected')) {
-                if (!elem.classList.value.includes('connector')) {
-                    let body = elem.parentElement
-                    let id
-                    if (body.id) {
-                        id = body.id
-                        document.querySelector('#simulation-window').removeChild(body)
-                    }
-                    else {
-                        document.querySelector('#simulation-window').removeChild(body.parentElement)
-                        id = body.parentElement.id
-                    }
+            for (id of Object.keys(components)) {
+                if (components[id].selected) {
+                    components[id].delete()
                     delete components[id]
                 }
             }
@@ -224,30 +195,8 @@ $(function(){
 let refresh = () => {
     sim.innerHTML = ""
     for (id of Object.keys(components)) {
-        let component = document.createElement('div')
-        component.classList.add(categories[components[id].type])
-        component.setAttribute('style', 'top:' + components[id].location.y + 'px;left:' + components[id].location.x + 'px;')
-        component.id = id
-        component.innerHTML = compHTML[components[id].type]
-        component.addEventListener('dragstart', simDragStart)
-        component.addEventListener('click', () => {
-            event.target.classList.add('selected')
-        })
-        sim.appendChild(component)
+        sim.appendChild(components[id].getDom)
     }
-}
-
-let append = (id) => {
-    let component = document.createElement('div')
-    component.classList.add(categories[components[id].type])
-    component.setAttribute('style', 'top:' + components[id].y + 'px;left:' + components[id].x + 'px;')
-    component.id = id
-    component.innerHTML = components[id].getHTML
-    component.addEventListener('dragstart', simDragStart)
-    component.addEventListener('click', () => {
-        event.target.classList.add('selected')
-    })
-    sim.appendChild(component)
 }
 
 let  getOffset = (el) => {
@@ -264,14 +213,6 @@ let connect = (div1, div2, color, thickness) => { // draw a line connecting elem
     var off1 = getOffset(div1);
     var off2 = getOffset(div2);
 
-    /*
-    off1.left -= 10/scale
-    off1.top -= 10/scale
-
-    off2.left -= 10/scale
-    off2.top += 10/scale
-    */
-
     // bottom right
     var x1 = off1.left + off1.width - 10;
     var y1 = off1.top + off1.height - 10;
@@ -286,27 +227,34 @@ let connect = (div1, div2, color, thickness) => { // draw a line connecting elem
 
     console.log(cx,cy)
     // angle
-    var angle = Math.atan2((y1-y2),(x1-x2))*(180/Math.PI);
+    var angle = Math.atan2((y1-y2),(x1-x2))*(180 / Math.PI);
     // make hr
-    var htmlLine = "<div class='wire' style='z-index:-10;padding:0px; margin:0px; height:" + thickness + "px; background-color:" + color + "; line-height:1px; position:absolute; left:" + cx + "px; top:" + cy + "px; width:" + length + "px; -moz-transform:rotate(" + angle + "deg); -webkit-transform:rotate(" + angle + "deg); -o-transform:rotate(" + angle + "deg); -ms-transform:rotate(" + angle + "deg); transform:rotate(" + angle + "deg);' />";
+    var htmlLine = document.createElement('div')
+    htmlLine.classList.add('wire')
+    htmlLine.setAttribute('style',"z-index:-10;padding:0px; margin:0px; height:" + thickness + "px; background-color:" + color + "; line-height:1px; position:absolute; left:" + cx + "px; top:" + cy + "px; width:" + length + "px; -moz-transform:rotate(" + angle + "deg); -webkit-transform:rotate(" + angle + "deg); -o-transform:rotate(" + angle + "deg); -ms-transform:rotate(" + angle + "deg); transform:rotate(" + angle + "deg);");
     //
     // alert(htmlLine);
-    document.querySelector('#simulation-window').innerHTML += htmlLine;
+    sim.appendChild(htmlLine);
 }
 
 document.querySelector("#side-panel").addEventListener('pointerdown', () => {
     instance.pause()
 })
 
-document.addEventListener('pointerup', () => {
+document.addEventListener('click', () => {
+
+    console.log(event.target)
+    console.log(event.target.classList.value.includes('connector'))
 
     if (navMode == 0) {
         instance.resume()
     }
 
-    if (!pressedKeys[17] && navMode == 1 && event.y > document.querySelector("#navbar").getBoundingClientRect().height || event.target.classList.value.includes('connector')) {
-        for (elem of document.querySelectorAll('.selected')) {
-            elem.classList.remove('selected')
+    if (!pressedKeys[17] && event.y > document.querySelector("#navbar").getBoundingClientRect().height) {
+        for (id of Object.keys(components)) {
+            if (event.target != components[id].getDom && event.target != components[id].getBody ) {
+                components[id].deselect()
+            }
         }
     }
 
@@ -315,7 +263,7 @@ document.addEventListener('pointerup', () => {
         wireOrigin = null
     }
 
-    if (event.target.classList.value.includes('connector')) {
+    else {
         if (drawWire) {
             if (event.target != wireOrigin) {
                 oP = wireOrigin
@@ -345,6 +293,9 @@ document.addEventListener('pointerup', () => {
             drawWire = true
             wireOrigin = event.target
         }
+        for (id of Object.keys(components)) {
+            components[id].deselect()
+        }
     }
 })
 
@@ -357,20 +308,37 @@ dropzone.addEventListener('drop', () => {
     dropData = JSON.parse(event.dataTransfer.getData("text"))
 
     if (dropData['from'] == 'panel') {
-        let loc_x
-        let loc_y
         if (categories[dropData['type']] == 'gate') {
-            loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff'] - 20
+            let loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff'] - 20
+            let loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
+            let component = document.createElement('div')
+            component.classList.add(categories[dropData['type']])
+            component.setAttribute('style', 'top:' + loc_y + 'px;left:' + loc_x + 'px;')
+            component.id = elementId
+            component.innerHTML = HTML[dropData['type']]
+            components[elementId] = new Gate(dropData['type'], loc_x, loc_y, component)
+            components[elementId].enableSelect()
+            sim.appendChild(component)
+            elementId += 1
         }
-        else {
-            loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff']
+        else if (categories[dropData['type']] == 'input') {
+            console.log('input',dropData['type'])
+
+            let loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff']
+            let loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
+            let component = document.createElement('div')
+            component.classList.add(categories[dropData['type']])
+            component.setAttribute('style', 'top:' + loc_y + 'px;left:' + loc_x + 'px;')
+            component.id = elementId
+            component.innerHTML = HTML[dropData['type']]
+            components[elementId] = new Input(dropData['type'], loc_x, loc_y, component)
+            components[elementId].enableSelect()
+            sim.appendChild(component)
+            elementId += 1
         }
-        loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
-
-        components[elementId] = new Gate(dropData['type'], loc_x, loc_y)
-
-        append(elementId)
-        elementId += 1
+        else if (categories[dropData['type']] == 'light') {
+            console.log('light',dropData['type'])
+        }
     }
     else {
         console.log('dragging',components[dropData['type']])
