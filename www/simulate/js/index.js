@@ -375,7 +375,7 @@ dropzone.addEventListener('drop', () => {
     }
 })
 
-// handler for adjusting the scale veruable on any pan
+// handler for adjusting the scale variable on any pan
 instance.on('transform', () => {
     scale = instance.getTransform().scale
 })
