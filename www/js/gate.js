@@ -166,11 +166,26 @@ class Gate {
         // AND ->   (val1 && val2)
         else if (this.type == 'and') {
             let val = null
-            if (!(this.in1 == null || this.in2 == null)) {
-                if (!(this.in1.getValue == null || this.in2.getValue == null)) {
-                    val = (this.in1.getValue && this.in2.getValue)
+            let v1 = null
+            let v2 = null
+            if (this.in1 != null) {
+                if (this.in1.getValue != null) {
+                    v1 = this.in1.getValue
                 }
             }
+            if (this.in2 != null) {
+                if (this.in2.getValue != null) {
+                    v2 = this.in2.getValue
+                }
+            }
+            // float condition(s)
+            if ((v1 == null && v2 == false) || (v1 == false && v2 == null)) {
+                val = false
+            }
+            else if (v1 != null && v2 != null) {
+                val = (v1 && v2)
+            }
+
             if (val == null) {
                 this.nOut.float()
             }
@@ -190,10 +205,24 @@ class Gate {
         // OR ->    (val1 || val2)
         else if (this.type == 'or') {
             let val = null
-            if (!(this.in1 == null || this.in2 == null)) {
-                if (!(this.in1.getValue == null || this.in2.getValue == null)) {
-                    val = (this.in1.getValue || this.in2.getValue)
+            let v1 = null
+            let v2 = null
+            if (this.in1 != null) {
+                if (this.in1.getValue != null) {
+                    v1 = this.in1.getValue
                 }
+            }
+            if (this.in2 != null) {
+                if (this.in2.getValue != null) {
+                    v2 = this.in2.getValue
+                }
+            }
+            // float condition(s)
+            if ((v1 == null && v2 == true) || (v1 == true && v2 == null)) {
+                val = true
+            }
+            else if (v1 != null && v2 != null) {
+                val = (v1 || v2)
             }
             if (val == null) {
                 this.nOut.float()
@@ -214,10 +243,24 @@ class Gate {
         // NAND ->  !(val1 && val2)
         else if (this.type == 'nand') {
             let val = null
-            if (!(this.in1 == null || this.in2 == null)) {
-                if (!(this.in1.getValue == null || this.in2.getValue == null)) {
-                    val = !(this.in1.getValue && this.in2.getValue)
+            let v1 = null
+            let v2 = null
+            if (this.in1 != null) {
+                if (this.in1.getValue != null) {
+                    v1 = this.in1.getValue
                 }
+            }
+            if (this.in2 != null) {
+                if (this.in2.getValue != null) {
+                    v2 = this.in2.getValue
+                }
+            }
+            // float condition(s)
+            if ((v1 == null && v2 == false) || (v1 == false && v2 == null)) {
+                val = true
+            }
+            else if (v1 != null && v2 != null) {
+                val = !(v1 && v2)
             }
             if (val == null) {
                 this.nOut.float()
@@ -238,10 +281,24 @@ class Gate {
         // NOR ->   !(val1 || val2)
         else if (this.type == 'nor') {
             let val = null
-            if (!(this.in1 == null || this.in2 == null)) {
-                if (!(this.in1.getValue == null || this.in2.getValue == null)) {
-                    val = !(this.in1.getValue || this.in2.getValue)
+            let v1 = null
+            let v2 = null
+            if (this.in1 != null) {
+                if (this.in1.getValue != null) {
+                    v1 = this.in1.getValue
                 }
+            }
+            if (this.in2 != null) {
+                if (this.in2.getValue != null) {
+                    v2 = this.in2.getValue
+                }
+            }
+            // float condition(s)
+            if ((v1 == null && v2 == true) || (v1 == true && v2 == null)) {
+                val = false
+            }
+            else if (v1 != null && v2 != null) {
+                val = !(v1 || v2)
             }
             if (val == null) {
                 this.nOut.float()

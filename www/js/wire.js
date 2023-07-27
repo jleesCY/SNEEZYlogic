@@ -61,13 +61,13 @@ class Wire {
         var x2 = off2.left + off2.width - 12;
         var y2 = off2.top + 10;
         // distance
-        var length = Math.sqrt((((x2-x1) * (x2-x1)) + ((y2-y1) * (y2-y1)))/scale);
+        var length = Math.sqrt((((x2-x1) * (x2-x1)) + ((y2-y1) * (y2-y1))));
         // center
         var cx = ((x1 + x2) / 2) - (length / 2);
         var cy = ((y1 + y2) / 2) - (thickness / 2);
 
         // angle
-        var angle = Math.atan2((y1-y2),(x1-x2))*(180 / Math.PI);
+        var angle = Math.atan2((y1 - y2),(x1 - x2)) *( 180 / Math.PI);
         // make hr
         var htmlLine = document.createElement('div')
         htmlLine.classList.add('wire')

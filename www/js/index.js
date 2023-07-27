@@ -217,7 +217,6 @@ $(function(){
         if (event.key === "Delete" || event.key === "Backspace") {
             for (id of Object.keys(components)) {
                 if (components[id].selected) {
-                    console.log(categories[components[id].type])
                     // handle component's outputs
                     if (categories[components[id].type] != 'light' && categories[components[id].type] != 'label') {
                         for (let wire of components[id].out) {
@@ -245,7 +244,7 @@ $(function(){
                             }
                             if (components[id].in2 != null) {
                                 for (let i = 0; i < components[id].in2.n1.parent.out.length; i++) {
-                                    if (components[id].in2.n1.parent.out[i] === components[id].in1) {
+                                    if (components[id].in2.n1.parent.out[i] === components[id].in2) {
                                         delete components[id].in2.n1.parent.out.splice(i,1)
                                         break;
                                     }
