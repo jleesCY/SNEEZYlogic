@@ -13,19 +13,19 @@ $('.accordion').on('click', '.accordion-control', function(e){
 
 // Component inner HTML
 let HTML = {
-    'and':      '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="../images/gates/AND.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'or':       '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="../images/gates/OR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'not':      '<div class="in-1"><div class="connector off" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="../images/gates/NOT.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
-    'nand':     '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nand" tabindex="1"><img src="../images/gates/NAND.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
-    'nor':      '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nor" tabindex="1"><img src="../images/gates/NOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
-    'xor':      '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xor" tabindex="1"><img src="../images/gates/XOR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'xnor':     '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xnor" tabindex="1"><img src="../images/gates/XNOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
+    'and':      '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="../images/gates/AND.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
+    'or':       '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="../images/gates/OR.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
+    'not':      '<div class="in-1"><div class="connector float" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="../images/gates/NOT.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
+    'nand':     '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body nand" tabindex="1"><img src="../images/gates/NAND.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
+    'nor':      '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body nor" tabindex="1"><img src="../images/gates/NOR.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
+    'xor':      '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body xor" tabindex="1"><img src="../images/gates/XOR.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
+    'xnor':     '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body xnor" tabindex="1"><img src="../images/gates/XNOR.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
     'button':   '<div class="body button low" tabindex="1" draggable="true"></div><div class="connector off" tabindex="1"></div>',
     'switch':   '<div class="body switch low" tabindex="1" draggable="true"><div class="top"></div><div class="bottom"></div></div><div class="connector off" tabindex="1"></div>',
     'gnd':      '<div class="body const low" tabindex="1" draggable="true">0</div><div class="connector off" tabindex="1"></div>',
     'vcc':      '<div class="body const high" tabindex="1" draggable="true">1</div><div class="connector on" tabindex="1"></div>',
-    'led':      '<div class="body led low" tabindex="1" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'label':    'text goes<div>here</div>'
+    'led':      '<div class="body led float" tabindex="1" draggable="true"></div><div class="connector float" tabindex="1"></div>',
+    'label':    'SNEEZYlabel'
 }
 
 // Possible types of components
@@ -45,7 +45,7 @@ let categories = {
     'vcc': connTypes[1],
     'gnd': connTypes[1],
     'led': connTypes[2],
-    'label': 'label'
+    'label': 'label',
 }
 
 // configuring data for pan feature
@@ -217,8 +217,9 @@ $(function(){
         if (event.key === "Delete" || event.key === "Backspace") {
             for (id of Object.keys(components)) {
                 if (components[id].selected) {
+                    console.log(categories[components[id].type])
                     // handle component's outputs
-                    if (categories[components[id].type] != 'light') {
+                    if (categories[components[id].type] != 'light' && categories[components[id].type] != 'label') {
                         for (let wire of components[id].out) {
                             s = wire.n1.parent[wire.n1.loc]
                             e = wire.drives[wire.n2.loc]
@@ -229,7 +230,7 @@ $(function(){
                         }
                     }
                     // handle component's inputs
-                    if (categories[components[id].type] != 'input') {
+                    if (categories[components[id].type] != 'input' && categories[components[id].type] != 'label') {
                         if (categories[components[id].type] == 'gate') {
                             if (components[id].in1 != null) {
                                 for (let i = 0; i < components[id].in1.n1.parent.out.length; i++) {

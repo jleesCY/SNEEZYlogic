@@ -57,10 +57,17 @@ class Connector {
     }
     on = () => {
         this.dom.classList.remove('off')
+        this.dom.classList.remove('float')
         this.dom.classList.add('on')
     }
     off = () => {
         this.dom.classList.remove('on')
+        this.dom.classList.remove('float')
         this.dom.classList.add('off')
+    }
+    float = () => {
+        this.dom.classList.remove('on')
+        this.dom.classList.remove('off')
+        this.dom.classList.add('float')
     }
 }

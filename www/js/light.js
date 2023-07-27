@@ -65,18 +65,17 @@ class Light {
     // ----- OTHER -----
     //
     calcOutput = () => {
+        this.float()
         if (this.in1 != null) {
-            if (this.in1.getValue) {
-                this.on()
-            }
-            else {
-                this.off()
+            if (this.in1.value != null) {
+                if (this.in1.value) {
+                    this.on()
+                }
+                else {
+                    this.off()
+                }
             }
         }
-        else {
-            this.off()
-        }
-        
     }
     select = () => {
         this.dom.classList.add('selected')
@@ -97,12 +96,20 @@ class Light {
     }
     on = () => {
         this.dom.children[0].classList.remove('low')
+        this.dom.children[0].classList.remove('float')
         this.dom.children[0].classList.add('high')
         this.n1.on()
     }
     off = () => {
         this.dom.children[0].classList.remove('high')
+        this.dom.children[0].classList.remove('float')
         this.dom.children[0].classList.add('low')
         this.n1.off()
+    }
+    float = () => {
+        this.dom.children[0].classList.remove('high')
+        this.dom.children[0].classList.remove('low')
+        this.dom.children[0].classList.add('float')
+        this.n1.float()
     }
 }

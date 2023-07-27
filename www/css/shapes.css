@@ -143,6 +143,10 @@
     background-color:rgb(255,75,75)
 }
 
+.float {
+    background-color:rgb(40, 218, 23)
+}
+
 .label {
     position: absolute;
     display:flex;

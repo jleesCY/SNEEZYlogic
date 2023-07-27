@@ -2,7 +2,7 @@ class Wire {
     n1 = null
     n2 = null
     drives = null
-    value = false
+    value = null
     dom = null
     id = ""
 
@@ -11,7 +11,7 @@ class Wire {
         this.n1 = n1
         this.n2 = n2
         this.drives = d
-        this.value = false
+        this.value = null
         this.dom = null
     }
 

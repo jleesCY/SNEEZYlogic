@@ -4,12 +4,14 @@ class Label {
     dom = null
     selected = false
     editable = false
+    type = 'label'
     constructor(x,y,dom) {
         this.x = x
         this.y = y
         this.dom = dom
         this.selected = false
         this.editable = false
+        this.type = 'label'
     }
 
     //

@@ -105,26 +105,36 @@ class Gate {
     calcOutput = () => {
         // initial node coloring
         if (this.in1 == null) {
-            this.n1.off()
+            this.n1.float()
         }
         else {
-            if (this.in1.getValue) {
-                this.n1.on()
+            if (this.in1.getValue == null) {
+                this.n1.float()
             }
             else {
-                this.n1.off()
+                if (this.in1.getValue) {
+                    this.n1.on()
+                }
+                else {
+                    this.n1.off()
+                }
             }
         }
         if (this.type != 'not') {
             if (this.in2 == null) {
-                this.n2.off()
+                this.n2.float()
             }
             else {
-                if (this.in2.getValue) {
-                    this.n2.on()
+                if (this.in2.getValue == null) {
+                    this.n2.float()
                 }
                 else {
-                    this.n2.off()
+                    if (this.in2.getValue) {
+                        this.n2.on()
+                    }
+                    else {
+                        this.n2.off()
+                    }
                 }
             }
         }
@@ -132,17 +142,20 @@ class Gate {
         // NOT
         if (this.type == 'not') {
             let val = null
-            if (this.in1 == null) {
-                val = !false
+            if (this.in1 != null) {
+                if (this.in1.getValue != null) {
+                    val = !this.in1.getValue
+                }
+            }
+            if (val == null) {
+                this.nOut.float()
             }
             else {
-                val = !this.in1.getValue
+                if (val)
+                    this.nOut.on()
+                else
+                    this.nOut.off()
             }
-            if (val) 
-                this.nOut.on()
-            else
-                this.nOut.off()
-
             for (let wire of this.out) {
                 if (wire.getValue != val) {
                     wire.setValue = val
@@ -153,22 +166,20 @@ class Gate {
         // AND ->   (val1 && val2)
         else if (this.type == 'and') {
             let val = null
-            if (this.in1 == null && this.in2 == null) {
-                val = (false && false)
+            if (!(this.in1 == null || this.in2 == null)) {
+                if (!(this.in1.getValue == null || this.in2.getValue == null)) {
+                    val = (this.in1.getValue && this.in2.getValue)
+                }
             }
-            else if (this.in1 == null && this.in2 != null) {
-                val = (false && this.in2.getValue)
-            }
-            else if (this.in1 != null && this.in2 == null) {
-                val = (this.in1.getValue && false)
+            if (val == null) {
+                this.nOut.float()
             }
             else {
-                val = (this.in1.getValue && this.in2.getValue)
+                if (val)
+                    this.nOut.on()
+                else
+                    this.nOut.off()
             }
-            if (val)
-                this.nOut.on()
-            else
-                this.nOut.off()
             for (let wire of this.out) {
                 if (wire.getValue != val) {
                     wire.setValue = val
@@ -179,22 +190,20 @@ class Gate {
         // OR ->    (val1 || val2)
         else if (this.type == 'or') {
             let val = null
-            if (this.in1 == null && this.in2 == null) {
-                val = (false || false)
+            if (!(this.in1 == null || this.in2 == null)) {
+                if (!(this.in1.getValue == null || this.in2.getValue == null)) {
+                    val = (this.in1.getValue || this.in2.getValue)
+                }
             }
-            else if (this.in1 == null && this.in2 != null) {
-                val = (false || this.in2.getValue)
-            }
-            else if (this.in1 != null && this.in2 == null) {
-                val = (this.in1.getValue || false)
+            if (val == null) {
+                this.nOut.float()
             }
             else {
-                val = (this.in1.getValue || this.in2.getValue)
+                if (val)
+                    this.nOut.on()
+                else
+                    this.nOut.off()
             }
-            if (val)
-                this.nOut.on()
-            else
-                this.nOut.off()
             for (let wire of this.out) {
                 if (wire.getValue != val) {
                     wire.setValue = val
@@ -205,22 +214,20 @@ class Gate {
         // NAND ->  !(val1 && val2)
         else if (this.type == 'nand') {
             let val = null
-            if (this.in1 == null && this.in2 == null) {
-                val = !(false && false)
+            if (!(this.in1 == null || this.in2 == null)) {
+                if (!(this.in1.getValue == null || this.in2.getValue == null)) {
+                    val = !(this.in1.getValue && this.in2.getValue)
+                }
             }
-            else if (this.in1 == null && this.in2 != null) {
-                val = !(false && this.in2.getValue)
-            }
-            else if (this.in1 != null && this.in2 == null) {
-                val = !(this.in1.getValue && false)
+            if (val == null) {
+                this.nOut.float()
             }
             else {
-                val = !(this.in1.getValue && this.in2.getValue)
+                if (val)
+                    this.nOut.on()
+                else
+                    this.nOut.off()
             }
-            if (val)
-                this.nOut.on()
-            else
-                this.nOut.off()
             for (let wire of this.out) {
                 if (wire.getValue != val) {
                     wire.setValue = val
@@ -231,22 +238,20 @@ class Gate {
         // NOR ->   !(val1 || val2)
         else if (this.type == 'nor') {
             let val = null
-            if (this.in1 == null && this.in2 == null) {
-                val = !(false || false)
+            if (!(this.in1 == null || this.in2 == null)) {
+                if (!(this.in1.getValue == null || this.in2.getValue == null)) {
+                    val = !(this.in1.getValue || this.in2.getValue)
+                }
             }
-            else if (this.in1 == null && this.in2 != null) {
-                val = !(false || this.in2.getValue)
-            }
-            else if (this.in1 != null && this.in2 == null) {
-                val = !(this.in1.getValue || false)
+            if (val == null) {
+                this.nOut.float()
             }
             else {
-                val = !(this.in1.getValue || this.in2.getValue)
+                if (val)
+                    this.nOut.on()
+                else
+                    this.nOut.off()
             }
-            if (val)
-                this.nOut.on()
-            else
-                this.nOut.off()
             for (let wire of this.out) {
                 if (wire.getValue != val) {
                     wire.setValue = val
@@ -257,22 +262,20 @@ class Gate {
         // XOR ->   (val1 ^ val2)
         else if (this.type == 'xor') {
             let val = null
-            if (this.in1 == null && this.in2 == null) {
-                val = (false ^ false)
+            if (!(this.in1 == null || this.in2 == null)) {
+                if (!(this.in1.getValue == null || this.in2.getValue == null)) {
+                    val = (this.in1.getValue ^ this.in2.getValue)
+                }
             }
-            else if (this.in1 == null && this.in2 != null) {
-                val = (false ^ this.in2.getValue)
-            }
-            else if (this.in1 != null && this.in2 == null) {
-                val = (this.in1.getValue ^ false)
+            if (val == null) {
+                this.nOut.float()
             }
             else {
-                val = (this.in1.getValue ^ this.in2.getValue)
+                if (val)
+                    this.nOut.on()
+                else
+                    this.nOut.off()
             }
-            if (val)
-                this.nOut.on()
-            else
-                this.nOut.off()
             for (let wire of this.out) {
                 if (wire.getValue != val) {
                     wire.setValue = val
@@ -283,22 +286,20 @@ class Gate {
         // XNOR ->  !(val1 ^ val2)
         else if (this.type == 'xnor') {
             let val = null
-            if (this.in1 == null && this.in2 == null) {
-                val = !(false ^ false)
+            if (!(this.in1 == null || this.in2 == null)) {
+                if (!(this.in1.getValue == null || this.in2.getValue == null)) {
+                    val = !(this.in1.getValue ^ this.in2.getValue)
+                }
             }
-            else if (this.in1 == null && this.in2 != null) {
-                val = !(false ^ this.in2.getValue)
-            }
-            else if (this.in1 != null && this.in2 == null) {
-                val = !(this.in1.getValue ^ false)
+            if (val == null) {
+                this.nOut.float()
             }
             else {
-                val = !(this.in1.getValue ^ this.in2.getValue)
+                if (val)
+                    this.nOut.on()
+                else
+                    this.nOut.off()
             }
-            if (val)
-                this.nOut.on()
-            else
-                this.nOut.off()
             for (let wire of this.out) {
                 if (wire.getValue != val) {
                     wire.setValue = val
