@@ -1,11 +1,13 @@
 class Connector {
     type = ""
+    loc = ""
     dom = null
     selected = false
     parent = null
 
-    constructor(t, d, p) {
+    constructor(t, l, d, p) {
         this.type = t
+        this.loc = l
         this.dom = d
         this.parent = p
         this.selected = false

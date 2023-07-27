@@ -3,9 +3,10 @@ class Input {
     out = []
     x = 0
     y = 0
-    n = null
+    nOut = null
     dom = null
     selected = false
+    value = false
 
     constructor(type, x, y, dom) {
         this.type = type
@@ -13,8 +14,12 @@ class Input {
         this.x = x
         this.y = y
         this.out =  []
-        this.n = null
+        this.nOut = null
         this.selected = false
+        this.value = false
+        if (this.type == 'vcc') {
+            this.value = true
+        }
     }
 
     //
@@ -27,7 +32,7 @@ class Input {
         return this.out
     }
     get getN() {
-        return this.n
+        return this.nOut
     }
     get getX() {
         return this.x
@@ -52,7 +57,7 @@ class Input {
         this.out.push(wire)
     }
     set setN(n) {
-        this.n = n
+        this.nOut = n
     }
     set setX(x) {
         this.x = x
@@ -105,7 +110,8 @@ class Input {
     on = () => {
         this.dom.children[0].classList.remove('low')
         this.dom.children[0].classList.add('high')
-        this.n.on()
+        this.nOut.on()
+        this.value = true
         for (let wire of this.out) {
             wire.setValue = true
         }
@@ -113,7 +119,8 @@ class Input {
     off = () => {
         this.dom.children[0].classList.remove('high')
         this.dom.children[0].classList.add('low')
-        this.n.off()
+        this.nOut.off()
+        this.value = false
         for (let wire of this.out) {
             wire.setValue = false
         }
@@ -121,11 +128,11 @@ class Input {
     toggle = () => {
         if (this.dom.children[0].classList.value.includes('high')) {
             this.off()
-            this.n.off()
+            this.nOut.off()
         }
         else {
             this.on()
-            this.n.on()
+            this.nOut.on()
         }
     }
 }

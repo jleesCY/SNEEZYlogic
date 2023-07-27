@@ -103,83 +103,206 @@ class Gate {
     // ----- OTHER -----
     //
     calcOutput = () => {
-        if (this.in1.getValue == true)
-            this.n1.on()
-        else
+        // initial node coloring
+        if (this.in1 == null) {
             this.n1.off()
-        if (this.in2.getValue == true)
-            this.n2.on()
-        else
-            this.n2.off()
+        }
+        else {
+            if (this.in1.getValue) {
+                this.n1.on()
+            }
+            else {
+                this.n1.off()
+            }
+        }
+        if (this.type != 'not') {
+            if (this.in2 == null) {
+                this.n2.off()
+            }
+            else {
+                if (this.in2.getValue) {
+                    this.n2.on()
+                }
+                else {
+                    this.n2.off()
+                }
+            }
+        }
 
+        // NOT
         if (this.type == 'not') {
-            if (!this.in1.getValue) 
+            let val = null
+            if (this.in1 == null) {
+                val = !false
+            }
+            else {
+                val = !this.in1.getValue
+            }
+            if (val) 
                 this.nOut.on()
             else
                 this.nOut.off()
 
             for (let wire of this.out) {
-                wire.setValue = (!this.in1.getValue)
+                if (wire.getValue != val) {
+                    wire.setValue = val
+                }
             }
         }
+
+        // AND ->   (val1 && val2)
         else if (this.type == 'and') {
-            if (this.in1.getValue && this.in2.getValue) 
+            let val = null
+            if (this.in1 == null && this.in2 == null) {
+                val = (false && false)
+            }
+            else if (this.in1 == null && this.in2 != null) {
+                val = (false && this.in2.getValue)
+            }
+            else if (this.in1 != null && this.in2 == null) {
+                val = (this.in1.getValue && false)
+            }
+            else {
+                val = (this.in1.getValue && this.in2.getValue)
+            }
+            if (val)
                 this.nOut.on()
             else
                 this.nOut.off()
-
             for (let wire of this.out) {
-                wire.setValue = (this.in1.getValue && this.in2.getValue)
+                if (wire.getValue != val) {
+                    wire.setValue = val
+                }
             }
         }
+
+        // OR ->    (val1 || val2)
         else if (this.type == 'or') {
-            if (this.in1.getValue || this.in2.getValue) 
+            let val = null
+            if (this.in1 == null && this.in2 == null) {
+                val = (false || false)
+            }
+            else if (this.in1 == null && this.in2 != null) {
+                val = (false || this.in2.getValue)
+            }
+            else if (this.in1 != null && this.in2 == null) {
+                val = (this.in1.getValue || false)
+            }
+            else {
+                val = (this.in1.getValue || this.in2.getValue)
+            }
+            if (val)
                 this.nOut.on()
             else
                 this.nOut.off()
-
             for (let wire of this.out) {
-                wire.setValue = (this.in1.getValue || this.in2.getValue)
+                if (wire.getValue != val) {
+                    wire.setValue = val
+                }
             }
         }
+
+        // NAND ->  !(val1 && val2)
         else if (this.type == 'nand') {
-            if (!(this.in1.getValue && this.in2.getValue)) 
+            let val = null
+            if (this.in1 == null && this.in2 == null) {
+                val = !(false && false)
+            }
+            else if (this.in1 == null && this.in2 != null) {
+                val = !(false && this.in2.getValue)
+            }
+            else if (this.in1 != null && this.in2 == null) {
+                val = !(this.in1.getValue && false)
+            }
+            else {
+                val = !(this.in1.getValue && this.in2.getValue)
+            }
+            if (val)
                 this.nOut.on()
             else
                 this.nOut.off()
-
             for (let wire of this.out) {
-                wire.setValue = (!(this.in1.getValue && this.in2.getValue))
+                if (wire.getValue != val) {
+                    wire.setValue = val
+                }
             }
         }
+
+        // NOR ->   !(val1 || val2)
         else if (this.type == 'nor') {
-            if (!(this.in1.getValue || this.in2.getValue)) 
+            let val = null
+            if (this.in1 == null && this.in2 == null) {
+                val = !(false || false)
+            }
+            else if (this.in1 == null && this.in2 != null) {
+                val = !(false || this.in2.getValue)
+            }
+            else if (this.in1 != null && this.in2 == null) {
+                val = !(this.in1.getValue || false)
+            }
+            else {
+                val = !(this.in1.getValue || this.in2.getValue)
+            }
+            if (val)
                 this.nOut.on()
             else
                 this.nOut.off()
-
             for (let wire of this.out) {
-                wire.setValue = (!(this.in1.getValue || this.in2.getValue))
+                if (wire.getValue != val) {
+                    wire.setValue = val
+                }
             }
         }
+
+        // XOR ->   (val1 ^ val2)
         else if (this.type == 'xor') {
-            if (this.in1.getValue ^ this.in2.getValue) 
+            let val = null
+            if (this.in1 == null && this.in2 == null) {
+                val = (false ^ false)
+            }
+            else if (this.in1 == null && this.in2 != null) {
+                val = (false ^ this.in2.getValue)
+            }
+            else if (this.in1 != null && this.in2 == null) {
+                val = (this.in1.getValue ^ false)
+            }
+            else {
+                val = (this.in1.getValue ^ this.in2.getValue)
+            }
+            if (val)
                 this.nOut.on()
             else
                 this.nOut.off()
-
             for (let wire of this.out) {
-                wire.setValue = (this.in1.getValue ^ this.in2.getValue)
+                if (wire.getValue != val) {
+                    wire.setValue = val
+                }
             }
         }
+
+        // XNOR ->  !(val1 ^ val2)
         else if (this.type == 'xnor') {
-            if (!(this.in1.getValue ^ this.in2.getValue)) 
+            let val = null
+            if (this.in1 == null && this.in2 == null) {
+                val = !(false ^ false)
+            }
+            else if (this.in1 == null && this.in2 != null) {
+                val = !(false ^ this.in2.getValue)
+            }
+            else if (this.in1 != null && this.in2 == null) {
+                val = !(this.in1.getValue ^ false)
+            }
+            else {
+                val = !(this.in1.getValue ^ this.in2.getValue)
+            }
+            if (val)
                 this.nOut.on()
             else
                 this.nOut.off()
-
             for (let wire of this.out) {
-                wire.setValue = (!(this.in1.getValue ^ this.in2.getValue))
+                if (wire.getValue != val) {
+                    wire.setValue = val
+                }
             }
         }
     }

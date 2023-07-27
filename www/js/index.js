@@ -50,8 +50,12 @@ let categories = {
 let zoom = 0.065
 let yoff = document.querySelector("#navbar").getBoundingClientRect().height
 elementId = 0
+connectorId = 0
+wireId = 0
 let scale = 1
 let components = {}
+let connectors = {}
+let wires = {}
 let navMode = 1
 
 // for the simulator's event handling
@@ -220,42 +224,7 @@ let refresh = () => {
 }
 
 // for connect: gets the offsets of the connectors to be connected
-let  getOffset = (el) => {
-    var rect = el.getBoundingClientRect();
-    return {
-        left: (rect.left - sim.getBoundingClientRect().x)/scale,
-        top: (rect.top - sim.getBoundingClientRect().y)/scale,
-        width: rect.width/scale || el.offsetWidth/scale,
-        height: rect.height/scale || el.offsetHeight/scale
-    };
-}
 
-// draws a wire between two connectors
-let connect = (div1, div2, color, thickness) => { // draw a line connecting elements
-    var off1 = getOffset(div1);
-    var off2 = getOffset(div2);
-
-    // bottom right
-    var x1 = off1.left + off1.width - 10;
-    var y1 = off1.top + off1.height - 10;
-    // top right
-    var x2 = off2.left + off2.width - 12;
-    var y2 = off2.top + 10;
-    // distance
-    var length = Math.sqrt((((x2-x1) * (x2-x1)) + ((y2-y1) * (y2-y1)))/scale);
-    // center
-    var cx = ((x1 + x2) / 2) - (length / 2);
-    var cy = ((y1 + y2) / 2) - (thickness / 2);
-
-    console.log(cx,cy)
-    // angle
-    var angle = Math.atan2((y1-y2),(x1-x2))*(180 / Math.PI);
-    // make hr
-    var htmlLine = document.createElement('div')
-    htmlLine.classList.add('wire')
-    htmlLine.setAttribute('style',"z-index:-10;padding:0px; margin:0px; height:" + thickness + "px; background-color:" + color + "; line-height:1px; position:absolute; left:" + cx + "px; top:" + cy + "px; width:" + length + "px; -moz-transform:rotate(" + angle + "deg); -webkit-transform:rotate(" + angle + "deg); -o-transform:rotate(" + angle + "deg); -ms-transform:rotate(" + angle + "deg); transform:rotate(" + angle + "deg);");
-    sim.appendChild(htmlLine);
-}
 
 // disabling panning from the side panel
 document.querySelector("#side-panel").addEventListener('pointerdown', () => {
@@ -302,32 +271,55 @@ document.addEventListener('click', () => {
     // if we did click a connector, begin the connection process
     else {
         if (drawWire) {
-            if (event.target != wireOrigin) {
-                oP = wireOrigin
-                // find origin parent
-                while (!connTypes.some(el => oP.classList.value.includes(el))) {
-                    oP = oP.parentElement
+            let s = null
+            let e = null
+            let n1 = connectors[wireOrigin.id]
+            let n2 = connectors[event.target.id]
+            if (n1 != n2) {
+                if (n1.parent != n2.parent) {
+                    if (n1.type != n2.type) {
+                        if (n2.type == 'in') {
+                            console.log('forwards')
+                            s = n1
+                            e = n2
+                        }
+                        else {
+                            console.log('backwards')
+                            s = n2
+                            e = n1
+                        }
+                        // connect the connectors
+                        wires['w' + wireId] = new Wire('w' + wireId,s,e,e.parent)
+                        components[s.parent.dom.id].addOut = wires['w' + wireId]
+                        console.log('i' + e.loc)
+                        components[e.parent.dom.id]['i' + e.loc] = wires['w' + wireId]
+                        wires['w' + wireId].render(scale)
+                        sim.appendChild(wires['w' + wireId].dom)
+                        if (categories[components[s.parent.dom.id].type] == 'gate') {
+                            components[s.parent.dom.id].calcOutput()
+                        }
+                        else {
+                            if (components[s.parent.dom.id].value) {
+                                components[s.parent.dom.id].on()
+                            }
+                            else {
+                                components[s.parent.dom.id].off()
+                            }
+                        }
+                        wireId += 1
+                        wireOrigin = null
+                        drawWire = false
+                    }
                 }
-                dP = event.target
-                // find destination parent
-                while (!connTypes.some(el => dP.classList.value.includes(el))) {
-                    dP = dP.parentElement
-                }
-
-                // just so long as the connectors are not a part of the same component
-                if (oP != dP) {
-                    // connect the connectors
-                    connect(wireOrigin,event.target,'#000',4)
-                    console.log(oP.id,"->",dP.id)
-                    wireOrigin = null
-                    drawWire = false
-                }
+            }
+            if (s != null && e != null) {
+                s.deselect()
+                e.deselect()
             }
         }
         // begin connection process
         else {
             drawWire = true
-
             wireOrigin = event.target
         }
         // deselect any components if a connector was clicked
@@ -359,16 +351,25 @@ dropzone.addEventListener('drop', () => {
             component.innerHTML = HTML[dropData['type']]
             components[elementId] = new Gate(dropData['type'], loc_x, loc_y, component)
             components[elementId].enableSelect()
-            components[elementId].setN1 = new Connector('in',components[elementId].getDom.children[0].children[0],components[elementId])
+            components[elementId].setN1 = new Connector('in', 'n1', components[elementId].getDom.children[0].children[0],components[elementId])
+            components[elementId].getN1.getDom.id = 'c' + connectorId
+            connectors['c' + connectorId] = components[elementId].getN1
+            connectorId += 1
             components[elementId].getN1.enableSelect()
             if (dropData["type"] != 'not') {
-                components[elementId].setN2 = new Connector('in',components[elementId].getDom.children[0].children[1],components[elementId])
+                components[elementId].setN2 = new Connector('in', 'n2', components[elementId].getDom.children[0].children[1],components[elementId])
+                components[elementId].getN2.getDom.id = 'c' + connectorId
+                connectors['c' + connectorId] = components[elementId].getN2
+                connectorId += 1
                 components[elementId].getN2.enableSelect()
             }
             else {
                 components[elementId].setN2 = components[elementId].getN1
             }
-            components[elementId].setNOut = new Connector('out',components[elementId].getDom.children[2],components[elementId])
+            components[elementId].setNOut = new Connector('out', 'nOut', components[elementId].getDom.children[2],components[elementId])
+            components[elementId].getNOut.getDom.id = 'c' + connectorId
+            connectors['c' + connectorId] = components[elementId].getNOut
+            connectorId += 1
             components[elementId].getNOut.enableSelect()
 
             console.log(component)
@@ -388,7 +389,10 @@ dropzone.addEventListener('drop', () => {
             components[elementId] = new Input(dropData['type'], loc_x, loc_y, component)
             components[elementId].enableSelect()
             components[elementId].enablePress()
-            components[elementId].setN = new Connector('out',components[elementId].getDom.children[1],components[elementId])
+            components[elementId].setN = new Connector('out', 'nOut', components[elementId].getDom.children[1],components[elementId])
+            components[elementId].getN.getDom.id = 'c' + connectorId
+            connectors['c' + connectorId] = components[elementId].getN
+            connectorId += 1
             components[elementId].getN.enableSelect()
             sim.appendChild(component)
             elementId += 1
@@ -404,7 +408,10 @@ dropzone.addEventListener('drop', () => {
             component.innerHTML = HTML[dropData['type']]
             components[elementId] = new Light(loc_x, loc_y, component)
             components[elementId].enableSelect()
-            components[elementId].setN = new Connector('in',components[elementId].getDom.children[1],components[elementId])
+            components[elementId].setN = new Connector('in', 'n1', components[elementId].getDom.children[1],components[elementId])
+            components[elementId].getN.getDom.id = 'c' + connectorId
+            connectors['c' + connectorId] = components[elementId].getN
+            connectorId += 1
             components[elementId].getN.enableSelect()
             sim.appendChild(component)
             elementId += 1

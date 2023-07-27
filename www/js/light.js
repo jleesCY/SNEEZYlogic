@@ -1,8 +1,8 @@
 class Light {
-    i = null
+    in1 = null
     x = 0
     y = 0
-    n = null
+    n1 = null
     dom = null
     selected = false
     type = 'led'
@@ -12,8 +12,8 @@ class Light {
         this.dom = dom
         this.x = x
         this.y = y
-        this.i = null
-        this.n = null
+        this.in1 = null
+        this.n1 = null
         this.selected = false
     }
 
@@ -24,10 +24,10 @@ class Light {
         return this.type
     }
     get getIn() {
-        return this.i
+        return this.in1
     }
     get getN() {
-        return this.n
+        return this.n1
     }
     get getX() {
         return this.x
@@ -49,7 +49,7 @@ class Light {
         this.i = i
     }
     set setN(n) {
-        this.n = n
+        this.n1 = n
     }
     set setX(x) {
         this.x = x
@@ -65,7 +65,7 @@ class Light {
     // ----- OTHER -----
     //
     calcOutput = () => {
-        if (this.i.getValue) {
+        if (this.in1.getValue) {
             this.on()
         }
         else {
@@ -92,11 +92,11 @@ class Light {
     on = () => {
         this.dom.children[0].classList.remove('low')
         this.dom.children[0].classList.add('high')
-        this.n.on()
+        this.n1.on()
     }
     off = () => {
         this.dom.children[0].classList.remove('high')
         this.dom.children[0].classList.add('low')
-        this.n.off()
+        this.n1.off()
     }
 }
