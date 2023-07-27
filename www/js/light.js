@@ -65,12 +65,18 @@ class Light {
     // ----- OTHER -----
     //
     calcOutput = () => {
-        if (this.in1.getValue) {
-            this.on()
+        if (this.in1 != null) {
+            if (this.in1.getValue) {
+                this.on()
+            }
+            else {
+                this.off()
+            }
         }
         else {
             this.off()
         }
+        
     }
     select = () => {
         this.dom.classList.add('selected')

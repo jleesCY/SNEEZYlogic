@@ -13,18 +13,19 @@ $('.accordion').on('click', '.accordion-control', function(e){
 
 // Component inner HTML
 let HTML = {
-    'and':  '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="../images/gates/AND.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'or':   '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="../images/gates/OR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'not':  '<div class="in-1"><div class="connector off" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="../images/gates/NOT.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
-    'nand': '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nand" tabindex="1"><img src="../images/gates/NAND.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
-    'nor':  '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nor" tabindex="1"><img src="../images/gates/NOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
-    'xor':  '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xor" tabindex="1"><img src="../images/gates/XOR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'xnor': '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xnor" tabindex="1"><img src="../images/gates/XNOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
+    'and':      '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="../images/gates/AND.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
+    'or':       '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="../images/gates/OR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
+    'not':      '<div class="in-1"><div class="connector off" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="../images/gates/NOT.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
+    'nand':     '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nand" tabindex="1"><img src="../images/gates/NAND.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
+    'nor':      '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body nor" tabindex="1"><img src="../images/gates/NOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
+    'xor':      '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xor" tabindex="1"><img src="../images/gates/XOR.svg" draggable="true"></div><div class="connector off" tabindex="1"></div>',
+    'xnor':     '<div class="in-2"><div class="connector off" tabindex="1"></div><div class="connector off" tabindex="1"></div></div><div class="body xnor" tabindex="1"><img src="../images/gates/XNOR.svg" draggable="true"></div><div class="connector on" tabindex="1"></div>',
     'button':   '<div class="body button low" tabindex="1" draggable="true"></div><div class="connector off" tabindex="1"></div>',
     'switch':   '<div class="body switch low" tabindex="1" draggable="true"><div class="top"></div><div class="bottom"></div></div><div class="connector off" tabindex="1"></div>',
-    'gnd':  '<div class="body const low" tabindex="1" draggable="true">0</div><div class="connector off" tabindex="1"></div>',
-    'vcc':  '<div class="body const high" tabindex="1" draggable="true">1</div><div class="connector on" tabindex="1"></div>',
-    'led':  '<div class="body led low" tabindex="1" draggable="true"></div><div class="connector off" tabindex="1"></div>',
+    'gnd':      '<div class="body const low" tabindex="1" draggable="true">0</div><div class="connector off" tabindex="1"></div>',
+    'vcc':      '<div class="body const high" tabindex="1" draggable="true">1</div><div class="connector on" tabindex="1"></div>',
+    'led':      '<div class="body led low" tabindex="1" draggable="true"></div><div class="connector off" tabindex="1"></div>',
+    'label':    'text goes<div>here</div>'
 }
 
 // Possible types of components
@@ -44,6 +45,7 @@ let categories = {
     'vcc': connTypes[1],
     'gnd': connTypes[1],
     'led': connTypes[2],
+    'label': 'label'
 }
 
 // configuring data for pan feature
@@ -117,9 +119,18 @@ let updateMode = () => {
         for (id of Object.keys(components)) {
             components[id].disableSelect()
             if (categories[components[id].getType] == 'input') {
-                console.log(components[id])
                 components[id].disablePress()
             }
+            else if (categories[components[id].getType] == 'label') {
+                components[id].disableEdit()
+            }
+        }
+        for (id of Object.keys(connectors)) {
+            connectors[id].disableSelect()
+        }
+        for (let elem of document.querySelectorAll(".draggable")) {
+            elem.removeEventListener('dragstart', panelDragstart)
+            elem.setAttribute('draggable','false')
         }
     }
     // edit
@@ -131,9 +142,18 @@ let updateMode = () => {
         for (id of Object.keys(components)) {
             components[id].enableSelect()
             if (categories[components[id].getType] == 'input') {
-                console.log(components[id])
                 components[id].enablePress()
             }
+            else if (categories[components[id].getType] == 'label') {
+                components[id].enableEdit()
+            }
+        }
+        for (id of Object.keys(connectors)) {
+            connectors[id].enableSelect()
+        }
+        for (let elem of document.querySelectorAll(".draggable")) {
+            elem.addEventListener('dragstart', panelDragstart)
+            elem.setAttribute('draggable','true')
         }
     }
 }
@@ -168,6 +188,8 @@ let load = () => {
 let trash = () => {
     if(confirm("Are you sure you want to delete this circuit?")) {
         components = {}
+        connectors = {}
+        wires = {}
         elementId = 0
         refresh()
     }
@@ -188,11 +210,6 @@ $(function(){
     window.onbeforeunload = function ()
     {
         return "";
-    };
-
-    // setting the handler for draggable elements from the side panel
-    for (let elem of document.querySelectorAll(".draggable")) {
-        elem.addEventListener('dragstart', panelDragstart)
     }
 
     // handler for deleting selected elements from the simulation
@@ -200,6 +217,58 @@ $(function(){
         if (event.key === "Delete" || event.key === "Backspace") {
             for (id of Object.keys(components)) {
                 if (components[id].selected) {
+                    // handle component's outputs
+                    if (categories[components[id].type] != 'light') {
+                        for (let wire of components[id].out) {
+                            s = wire.n1.parent[wire.n1.loc]
+                            e = wire.drives[wire.n2.loc]
+                            e.parent['i' + wire.n2.loc] = null
+                            wires[wire.id].delete()
+                            delete wires[wire.id]
+                            e.parent.calcOutput()
+                        }
+                    }
+                    // handle component's inputs
+                    if (categories[components[id].type] != 'input') {
+                        if (categories[components[id].type] == 'gate') {
+                            if (components[id].in1 != null) {
+                                for (let i = 0; i < components[id].in1.n1.parent.out.length; i++) {
+                                    if (components[id].in1.n1.parent.out[i] === components[id].in1) {
+                                        components[id].in1.n1.parent.out.splice(i,1)
+                                        break;
+                                    }
+                                }
+                                wires[components[id].in1.id].delete()
+                                delete wires[components[id].in1.id]
+                                components[id].in1 = null
+                            }
+                            if (components[id].in2 != null) {
+                                for (let i = 0; i < components[id].in2.n1.parent.out.length; i++) {
+                                    if (components[id].in2.n1.parent.out[i] === components[id].in1) {
+                                        delete components[id].in2.n1.parent.out.splice(i,1)
+                                        break;
+                                    }
+                                }
+                                wires[components[id].in2.id].delete()
+                                delete wires[components[id].in2.id]
+                                components[id].in2 = null
+                            }
+                        }
+                        else if (components[id].type == 'led') {
+                            if (components[id].in1 != null) {
+                                for (let i = 0; i < components[id].in1.n1.parent.out.length; i++) {
+                                    if (components[id].in1.n1.parent.out[i] === components[id].in1) {
+                                        components[id].in1.n1.parent.out.splice(i,1)
+                                        break;
+                                    }
+                                }
+                                wires[components[id].in1.id].delete()
+                                delete wires[components[id].in1.id]
+                                components[id].in1 = null
+                            }
+                        }
+                    }
+                    // delete component
                     components[id].delete()
                     delete components[id]
                 }
@@ -233,11 +302,6 @@ document.querySelector("#side-panel").addEventListener('pointerdown', () => {
 
 // listening for any click event on the document
 document.addEventListener('click', () => {
-    /*
-    console.log(event.target)
-    console.log(event.target.classList.value.includes('connector'))
-    */
-
     // ensuring panning is always enabled when pan mode is enabled
     if (navMode == 0) {
         instance.resume()
@@ -249,13 +313,11 @@ document.addEventListener('click', () => {
             if (event.target != components[id].getDom && event.target != components[id].getDom ) {
                 components[id].deselect()
                 if (categories[components[id].getType] == "gate" && !event.target.classList.value.includes('connector')) {
-                    console.log('gate')
                     components[id].getN1.deselect()
                     components[id].getN2.deselect()
                     components[id].getNOut.deselect()
                 }
                 else if ((categories[components[id].getType] == "input" || categories[components[id].getType] == "light")&& !event.target.classList.value.includes('connector')) {
-                    console.log('input')
                     components[id].getN.deselect()
                 }
             }
@@ -263,58 +325,52 @@ document.addEventListener('click', () => {
     }
 
     // if we did not click a connector, we do not want to begin the connetion process
-    if (!event.target.classList.value.includes('connector')) {
+    if (!event.target.classList.value.includes('connector') && navMode == 1) {
         drawWire = false
         wireOrigin = null
     }
 
     // if we did click a connector, begin the connection process
-    else {
+    else if (event.target.classList.value.includes('connector') && navMode == 1) {
         if (drawWire) {
             let s = null
             let e = null
-            let n1 = connectors[wireOrigin.id]
-            let n2 = connectors[event.target.id]
-            if (n1 != n2) {
-                if (n1.parent != n2.parent) {
-                    if (n1.type != n2.type) {
-                        if (n2.type == 'in') {
-                            console.log('forwards')
-                            s = n1
-                            e = n2
-                        }
-                        else {
-                            console.log('backwards')
-                            s = n2
-                            e = n1
-                        }
-                        // connect the connectors
-                        wires['w' + wireId] = new Wire('w' + wireId,s,e,e.parent)
-                        components[s.parent.dom.id].addOut = wires['w' + wireId]
-                        console.log('i' + e.loc)
-                        components[e.parent.dom.id]['i' + e.loc] = wires['w' + wireId]
-                        wires['w' + wireId].render(scale)
-                        sim.appendChild(wires['w' + wireId].dom)
-                        if (categories[components[s.parent.dom.id].type] == 'gate') {
-                            components[s.parent.dom.id].calcOutput()
-                        }
-                        else {
-                            if (components[s.parent.dom.id].value) {
-                                components[s.parent.dom.id].on()
-                            }
-                            else {
-                                components[s.parent.dom.id].off()
-                            }
-                        }
-                        wireId += 1
-                        wireOrigin = null
-                        drawWire = false
+            if (connectors[event.target.id].type == 'in') {
+                s = connectors[wireOrigin.id]
+                e = connectors[event.target.id]
+            }
+            else {
+                s = connectors[event.target.id]
+                e = connectors[wireOrigin.id]
+            }
+            if (s != e && s.parent != e.parent && s.type != e.type && e.parent['i' + e.loc] == null) {
+                // connect the connectors
+                wires['w' + wireId] = new Wire('w' + wireId,s,e,e.parent)
+                components[s.parent.dom.id].addOut = wires['w' + wireId]
+                components[e.parent.dom.id]['i' + e.loc] = wires['w' + wireId]
+                wires['w' + wireId].render(scale)
+                sim.appendChild(wires['w' + wireId].dom)
+                if (categories[components[s.parent.dom.id].type] == 'gate') {
+                    components[s.parent.dom.id].calcOutput()
+                }
+                else {
+                    if (components[s.parent.dom.id].value) {
+                        components[s.parent.dom.id].on()
+                    }
+                    else {
+                        components[s.parent.dom.id].off()
                     }
                 }
-            }
-            if (s != null && e != null) {
+                wireId += 1
+                wireOrigin = null
+                drawWire = false
                 s.deselect()
                 e.deselect()
+            }
+            else {
+                s.deselect()
+                e.select()
+                wireOrigin = event.target
             }
         }
         // begin connection process
@@ -371,8 +427,6 @@ dropzone.addEventListener('drop', () => {
             connectors['c' + connectorId] = components[elementId].getNOut
             connectorId += 1
             components[elementId].getNOut.enableSelect()
-
-            console.log(component)
             
             sim.appendChild(component)
             elementId += 1
@@ -413,6 +467,20 @@ dropzone.addEventListener('drop', () => {
             connectors['c' + connectorId] = components[elementId].getN
             connectorId += 1
             components[elementId].getN.enableSelect()
+            sim.appendChild(component)
+            elementId += 1
+        }
+        else if (dropData['type'] == 'label') {
+            let loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff']
+            let loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
+            let component = document.createElement('div')
+            component.classList.add(categories[dropData['type']])
+            component.setAttribute('style', 'top:' + loc_y + 'px;left:' + loc_x + 'px;')
+            component.id = elementId
+            component.innerHTML = HTML[dropData['type']]
+            components[elementId] = new Label(loc_x, loc_y, component)
+            components[elementId].enableSelect()
+            components[elementId].enableEdit()
             sim.appendChild(component)
             elementId += 1
         }

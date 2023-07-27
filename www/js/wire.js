@@ -79,4 +79,8 @@ class Wire {
         this.dom = this.connect(this.n1.dom, this.n2.dom, '#000', 4, scale)
         this.dom.id = this.id
     }
+
+    delete = () => {
+        this.dom.parentElement.removeChild(this.dom)
+    }
 }

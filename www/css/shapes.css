@@ -142,3 +142,15 @@
 .on {
     background-color:rgb(255,75,75)
 }
+
+.label {
+    position: absolute;
+    display:flex;
+    flex-direction:column;
+    color: white;
+    background-color: #000;
+    padding: 0 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 12pt
+}
