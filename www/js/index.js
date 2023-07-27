@@ -13,18 +13,19 @@ $('.accordion').on('click', '.accordion-control', function(e){
 
 // Component inner HTML
 let HTML = {
-    'and':      '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="../images/gates/AND.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
-    'or':       '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="../images/gates/OR.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
-    'not':      '<div class="in-1"><div class="connector float" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="../images/gates/NOT.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
-    'nand':     '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body nand" tabindex="1"><img src="../images/gates/NAND.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
-    'nor':      '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body nor" tabindex="1"><img src="../images/gates/NOR.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
-    'xor':      '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body xor" tabindex="1"><img src="../images/gates/XOR.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
-    'xnor':     '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body xnor" tabindex="1"><img src="../images/gates/XNOR.svg" draggable="true"></div><div class="connector float" tabindex="1"></div>',
-    'button':   '<div class="body button low" tabindex="1" draggable="true"></div><div class="connector off" tabindex="1"></div>',
-    'switch':   '<div class="body switch low" tabindex="1" draggable="true"><div class="top"></div><div class="bottom"></div></div><div class="connector off" tabindex="1"></div>',
-    'gnd':      '<div class="body const low" tabindex="1" draggable="true">0</div><div class="connector off" tabindex="1"></div>',
-    'vcc':      '<div class="body const high" tabindex="1" draggable="true">1</div><div class="connector on" tabindex="1"></div>',
-    'led':      '<div class="body led float" tabindex="1" draggable="true"></div><div class="connector float" tabindex="1"></div>',
+    'and':      '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body and" tabindex="1"><img src="../images/gates/AND.svg" draggable="false"></div><div class="connector float" tabindex="1"></div>',
+    'or':       '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body or" tabindex="1"><img src="../images/gates/OR.svg" draggable="false"></div><div class="connector float" tabindex="1"></div>',
+    'not':      '<div class="in-1"><div class="connector float" tabindex="1"></div></div><div class="body not" tabindex="1"><img src="../images/gates/NOT.svg" draggable="false"></div><div class="connector float" tabindex="1"></div>',
+    'nand':     '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body nand" tabindex="1"><img src="../images/gates/NAND.svg" draggable="false"></div><div class="connector float" tabindex="1"></div>',
+    'nor':      '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body nor" tabindex="1"><img src="../images/gates/NOR.svg" draggable="false"></div><div class="connector float" tabindex="1"></div>',
+    'xor':      '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body xor" tabindex="1"><img src="../images/gates/XOR.svg" draggable="false"></div><div class="connector float" tabindex="1"></div>',
+    'xnor':     '<div class="in-2"><div class="connector float" tabindex="1"></div><div class="connector float" tabindex="1"></div></div><div class="body xnor" tabindex="1"><img src="../images/gates/XNOR.svg" draggable="false"></div><div class="connector float" tabindex="1"></div>',
+    'button':   '<div class="body button low" tabindex="1"></div><div class="connector off" tabindex="1"></div>',
+    'switch':   '<div class="body switch low" tabindex="1"><div class="top"></div><div class="bottom"></div></div><div class="connector off" tabindex="1"></div>',
+    'gnd':      '<div class="body const low" tabindex="1">0</div><div class="connector off" tabindex="1"></div>',
+    'vcc':      '<div class="body const high" tabindex="1">1</div><div class="connector on" tabindex="1"></div>',
+    'led':      '<div class="body led float" tabindex="1"></div><div class="connector float" tabindex="1"></div>',
+    'seg7':     '<div class="in-4"><div class="connector float"></div><div class="connector float"></div><div class="connector float"></div><div class="connector float"></div></div><div class="display">0</div>',
     'label':    'SNEEZYlabel'
 }
 
@@ -218,7 +219,7 @@ $(function(){
             for (id of Object.keys(components)) {
                 if (components[id].selected) {
                     // handle component's outputs
-                    if (categories[components[id].type] != 'light' && categories[components[id].type] != 'label') {
+                    if (categories[components[id].type] != 'light' && categories[components[id].type] != 'label' && components[id].type != '7seg') {
                         for (let wire of components[id].out) {
                             s = wire.n1.parent[wire.n1.loc]
                             e = wire.drives[wire.n2.loc]
@@ -265,6 +266,52 @@ $(function(){
                                 wires[components[id].in1.id].delete()
                                 delete wires[components[id].in1.id]
                                 components[id].in1 = null
+                            }
+                        }
+                        else if (components[id].type == '7seg') {
+                            if (components[id].in1 != null) {
+                                for (let i = 0; i < components[id].in1.n1.parent.out.length; i++) {
+                                    if (components[id].in1.n1.parent.out[i] === components[id].in1) {
+                                        components[id].in1.n1.parent.out.splice(i,1)
+                                        break;
+                                    }
+                                }
+                                wires[components[id].in1.id].delete()
+                                delete wires[components[id].in1.id]
+                                components[id].in1 = null
+                            }
+                            if (components[id].in2 != null) {
+                                for (let i = 0; i < components[id].in2.n1.parent.out.length; i++) {
+                                    if (components[id].in2.n1.parent.out[i] === components[id].in2) {
+                                        delete components[id].in2.n1.parent.out.splice(i,1)
+                                        break;
+                                    }
+                                }
+                                wires[components[id].in2.id].delete()
+                                delete wires[components[id].in2.id]
+                                components[id].in2 = null
+                            }
+                            if (components[id].in3 != null) {
+                                for (let i = 0; i < components[id].in3.n1.parent.out.length; i++) {
+                                    if (components[id].in3.n1.parent.out[i] === components[id].in3) {
+                                        components[id].in3.n1.parent.out.splice(i,1)
+                                        break;
+                                    }
+                                }
+                                wires[components[id].in3.id].delete()
+                                delete wires[components[id].in3.id]
+                                components[id].in3 = null
+                            }
+                            if (components[id].in4 != null) {
+                                for (let i = 0; i < components[id].in4.n1.parent.out.length; i++) {
+                                    if (components[id].in4.n1.parent.out[i] === components[id].in4) {
+                                        delete components[id].in4.n1.parent.out.splice(i,1)
+                                        break;
+                                    }
+                                }
+                                wires[components[id].in4.id].delete()
+                                delete wires[components[id].in4.id]
+                                components[id].in4 = null
                             }
                         }
                     }
@@ -392,6 +439,7 @@ dropzone.addEventListener('dragover', () => {
 // handler for dropping elements into the simulation window
 dropzone.addEventListener('drop', () => {
     event.preventDefault()
+    console.log(event.dataTransfer.getData("text"))
     dropData = JSON.parse(event.dataTransfer.getData("text"))
 
     // if we dragged a component from the side panel
@@ -481,6 +529,41 @@ dropzone.addEventListener('drop', () => {
             components[elementId] = new Label(loc_x, loc_y, component)
             components[elementId].enableSelect()
             components[elementId].enableEdit()
+            sim.appendChild(component)
+            elementId += 1
+        }
+        else if (dropData['type'] == 'seg7') {
+            let loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff'] - 20
+            let loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
+            let component = document.createElement('div')
+            component.classList.add(dropData['type'])
+            component.setAttribute('style', 'top:' + loc_y + 'px;left:' + loc_x + 'px;')
+            component.id = elementId
+            component.innerHTML = HTML[dropData['type']]
+            components[elementId] = new Seg7(loc_x, loc_y, component)
+            components[elementId].enableSelect()
+
+            components[elementId].n1 = new Connector('in', 'n1', components[elementId].dom.children[0].children[0],components[elementId])
+            components[elementId].n1.dom.id = 'c' + connectorId
+            connectors['c' + connectorId] = components[elementId].n1
+            connectors['c' + connectorId].enableSelect()
+            connectorId += 1
+            components[elementId].n2 = new Connector('in', 'n2', components[elementId].dom.children[0].children[1],components[elementId])
+            components[elementId].n2.dom.id = 'c' + connectorId
+            connectors['c' + connectorId] = components[elementId].n2
+            connectors['c' + connectorId].enableSelect()
+            connectorId += 1
+            components[elementId].n3 = new Connector('in', 'n3', components[elementId].dom.children[0].children[2],components[elementId])
+            components[elementId].n3.dom.id = 'c' + connectorId
+            connectors['c' + connectorId] = components[elementId].n3
+            connectors['c' + connectorId].enableSelect()
+            connectorId += 1
+            components[elementId].n4 = new Connector('in', 'n4', components[elementId].dom.children[0].children[3],components[elementId])
+            components[elementId].n4.dom.id = 'c' + connectorId
+            connectors['c' + connectorId] = components[elementId].n4
+            connectors['c' + connectorId].enableSelect()
+            connectorId += 1
+
             sim.appendChild(component)
             elementId += 1
         }

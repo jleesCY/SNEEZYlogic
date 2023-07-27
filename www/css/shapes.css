@@ -121,6 +121,15 @@
     align-items: center;
     justify-content:right
 }
+.in-4 {
+    position: relative;
+    display:grid;
+    grid-template-rows: 20px 20px 20px 20px;
+    width: 20px;
+    gap: 5px;
+    align-items: center;
+    justify-content:right
+}
 
 .connector {
     padding:0;
@@ -157,4 +166,36 @@
     border-radius: 5px;
     font-weight: bold;
     font-size: 12pt
+}
+
+.seg7 {
+    position:absolute;
+    display:grid;
+    grid-template-columns: 20px 65px;
+    width: 85px;
+    height:94px;
+    gap: 0;
+}
+
+@font-face {
+    font-family: Seven-Seg;
+    src: url(../fonts/DSEG7ClassicMini-Bold.ttf);
+}
+
+.seg7 .display {
+    background-color:#000;
+    border: 3px solid #000;
+    border-radius: 5px;
+    color: rgb(255,75,75);
+    width:65px;
+    height:94px;
+    font-weight: bold;
+    justify-content: right;
+    font-size: 62pt;
+    align-items:center;
+    line-height: 90px;
+    text-indent: -3.5px;
+    align-content: right;
+    font-family: Seven-Seg;
+    margin:auto;
 }

@@ -15,55 +15,87 @@
         <div style="display:grid;grid-template-rows:auto 30px;height:100%">
             <div>
                 <div><strong style="font-size:40pt;color:white">SNEEZY</strong><span style="color:rgb(255,100,100);font-size:36pt">help</span></div>
-                <h3 style='margin:0'>\Interface\</h3>
+                <h3 style='margin:0'>\Side Panel\</h3>
+                    <ul>
+                        <li style="margin:0">
+                            COLLAPSING - Clicking any of the component headers will collapse that menu
+                        </li>
+                        <li style="margin:0">
+                            ADDING TO WORKSPACE - While in EDIT mode, drag and drop components from the side panel to the workspace to begin using them
+                        </li>
+                        <li style="margin:0">
+                            ACTIVATING - While in EDIT mode, clicking any component will activate it (if it is an input)
+                        </li>
+                        <li style="margin:0">
+                            SELECTING - While in EDIT mode, double-clicking any component will select it
+                        </li>
+                    </ul>
                 <h3 style='margin:0'>\Toolbar\</h3>
                     <ul>
-                        <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
-                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/undo.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                        <!-- <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
+                            <button class='toolbar-button' title='Undo' style='background-image:url("../images/other/undo.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
                             <span>UNDO - Undoes the last action on each press</span>
                         </li>
                         <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
-                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/redo.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <button class='toolbar-button' title='Undo' style='background-image:url("../images/other/redo.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
                             <span>REDO - Redoes the last undone action on each press</span>
-                        </li>
+                        </li> -->
                         <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
-                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/pan.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <button class='toolbar-button' title='Undo' style='background-image:url("../images/other/pan.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
                             <span>PAN - Enables workspace panning. Circuit interaction is disabled</span>
                         </li>
                         <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
-                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/cursor.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <button class='toolbar-button' title='Undo' style='background-image:url("../images/other/cursor.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
                             <span>EDIT - Enables circuit editing. Panning is disabled</span>
                         </li>
-                        <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
-                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/save.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                        <!-- <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
+                            <button class='toolbar-button' title='Undo' style='background-image:url("../images/other/save.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
                             <span>SAVE - Saves the current circuit into a loadable .json file</span>
                         </li>
                         <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
-                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/load.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <button class='toolbar-button' title='Undo' style='background-image:url("../images/other/load.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
                             <span>LOAD - Loads the provided .json file into the workspace</span>
-                        </li>
+                        </li> -->
                         <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
-                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/trash.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <button class='toolbar-button' title='Undo' style='background-image:url("../images/other/trash.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
                             <span>DELETE - Deletes the entire circuit from the workspace after confirmation</span>
                         </li>
                         <li style="margin:0;display:grid;grid-template-columns:55px auto;align-items:center">
-                            <button class='toolbar-button' title='Undo' style='background-image:url("images/other/help.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
+                            <button class='toolbar-button' title='Undo' style='background-image:url("../images/other/help.svg");width:35px;height:35px;margin:5px;border-radius:5px' draggable='false'></button>
                             <span>HELP - Redirects to the help page for help with the simulator</span>
                         </li>
                     </ul>
-                <h3 style='margin:0'>\Keyboard Controls\</h3>
-                <ul>
-                    <li style="margin:0">
-                        This is where
-                    </li>
-                    <li style="margin:0">
-                        Keyboard information will go
-                    </li>
-                </ul>
+
+                <h3 style='margin:0'>\Mouse\</h3>
+                    <ul>
+                        <li style="margin:0">
+                            PANNING - While in PAN mode, click and drag to pan the circuit
+                        </li>
+                        <li style="margin:0">
+                            ZOOMING - While in PAN mode, use the scroll wheel to zoom in and out
+                        </li>
+                        <li style="margin:0">
+                            ACTIVATING INPUTS - While in EDIT mode, clicking any input component will activate it
+                        </li>
+                        <li style="margin:0">
+                            WIRES - While in EDIT mode, clicking any two connection points will create a wire connection between them. Invalid connections will not work.
+                        </li>
+                        <li style="margin:0">
+                            SELECTING - While in EDIT mode, double-clicking any component will select it
+                        </li>
+                    </ul>
+
+                <h3 style='margin:0'>\Keyboard\</h3>
+                    <ul>
+                        <li style="margin:0">
+                            DELETE - Pressing while any component is selected will delete it
+                        </li>
+                        <li style="margin:0">
+                            BACKSPACE - Pressing while any component is selected will delete it
+                        </li>
+                    </ul>
             </div>
             <div style="display:grid;grid-template-columns:auto auto;">
-                <div style="text-align:left;padding-left:10px">Copyright 2023 by Joshua Lees. All rights reserved</div>
-                <div style="text-align:right;padding-right:10px">v0.1.0 (development)</div>
             </div>
         </div>
 
