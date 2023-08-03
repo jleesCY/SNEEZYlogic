@@ -1,4 +1,4 @@
-### v0.1.2 (PRE)
+### v0.1.2 (pre)
 present
 #### Features
 - Adding JK Flop Flop
@@ -8,12 +8,12 @@ present
 - Fixed an issue where sometimes node highlights would remain on even after a wire connection was made
 -
 
-### v0.1.1
+### v0.1.1 (stable)
 7/29/23
 #### Bug Fixes:
-- Minor javascript console bug
+- Fixed a minor javascript console bug where a few sections of code still outputted debug information
 
-### v0.1.0
+### v0.1.0 (stable)
 7/27/23
 #### Features:
 - Initial Release
