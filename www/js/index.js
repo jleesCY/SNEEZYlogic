@@ -443,7 +443,6 @@ dropzone.addEventListener('dragover', () => {
 // handler for dropping elements into the simulation window
 dropzone.addEventListener('drop', () => {
     event.preventDefault()
-    //console.log(event.dataTransfer.getData("text"))
     dropData = JSON.parse(event.dataTransfer.getData("text"))
 
     // if we dragged a component from the side panel
