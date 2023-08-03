@@ -26,11 +26,13 @@ let HTML = {
     'vcc':      '<div class="body const high" tabindex="1">1</div><div class="connector on" tabindex="1"></div>',
     'led':      '<div class="body led float" tabindex="1"></div><div class="connector float" tabindex="1"></div>',
     'seg7':     '<div class="in-4"><div class="connector float"></div><div class="connector float"></div><div class="connector float"></div><div class="connector float"></div></div><div class="display">0</div>',
-    'label':    'SNEEZYlabel'
+    'label':    'SNEEZYlabel',
+    'jkff':     '<div class="in-3"><div class="connector float"></div><div class="connector float"></div><div class="connector float"></div></div><div class="body jk"><img src="../images/flipflops/JKFF.svg"></div><div class="out-2"><div class="connector float"></div><div class="connector float"></div></div>',
+    'tff':      '<div class="in-2"><div class="connector float"></div><div class="connector float"></div></div><div class="body t"><img src="../images/flipflops/TFF.svg"></div><div class="out-2"><div class="connector float"></div><div class="connector float"></div></div>',
 }
 
 // Possible types of components
-let connTypes = ['gate', 'input', 'light']
+let connTypes = ['gate', 'input', 'light', 'flipflop']
 
 // Mapping of individual component names to their types
 let categories = {
@@ -47,6 +49,8 @@ let categories = {
     'gnd': connTypes[1],
     'led': connTypes[2],
     'label': 'label',
+    'tff': connTypes[3],
+    'jkff': connTypes[3]
 }
 
 // configuring data for pan feature
@@ -397,7 +401,7 @@ document.addEventListener('click', () => {
                 components[e.parent.dom.id]['i' + e.loc] = wires['w' + wireId]
                 wires['w' + wireId].render(scale)
                 sim.appendChild(wires['w' + wireId].dom)
-                if (categories[components[s.parent.dom.id].type] == 'gate') {
+                if (categories[components[s.parent.dom.id].type] == 'gate' || categories[components[s.parent.dom.id].type] == 'flipflop') {
                     components[s.parent.dom.id].calcOutput()
                 }
                 else {
@@ -439,7 +443,7 @@ dropzone.addEventListener('dragover', () => {
 // handler for dropping elements into the simulation window
 dropzone.addEventListener('drop', () => {
     event.preventDefault()
-    console.log(event.dataTransfer.getData("text"))
+    //console.log(event.dataTransfer.getData("text"))
     dropData = JSON.parse(event.dataTransfer.getData("text"))
 
     // if we dragged a component from the side panel
@@ -518,6 +522,7 @@ dropzone.addEventListener('drop', () => {
             sim.appendChild(component)
             elementId += 1
         }
+        // if the component is a label
         else if (dropData['type'] == 'label') {
             let loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff']
             let loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
@@ -532,6 +537,7 @@ dropzone.addEventListener('drop', () => {
             sim.appendChild(component)
             elementId += 1
         }
+        // if the component is a 7-segment display
         else if (dropData['type'] == 'seg7') {
             let loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff'] - 20
             let loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
@@ -566,6 +572,47 @@ dropzone.addEventListener('drop', () => {
 
             sim.appendChild(component)
             elementId += 1
+        }
+        else if (categories[dropData['type']] == 'flipflop') {
+            if (dropData['type'] == 'jkff') {
+
+            }
+            else if (dropData['type'] == 'tff') {
+                let loc_x = ((event.x - sim.getBoundingClientRect().x) / scale) - dropData['xoff'] - 20
+                let loc_y = (((event.y - yoff) - (sim.getBoundingClientRect().y - yoff)) / scale) - dropData['yoff']
+                let component = document.createElement('div')
+                component.classList.add(categories[dropData['type']])
+                component.setAttribute('style', 'top:' + loc_y + 'px;left:' + loc_x + 'px;')
+                component.id = elementId
+                component.innerHTML = HTML[dropData['type']]
+                components[elementId] = new FlipFlop(dropData['type'], loc_x, loc_y, component)
+                components[elementId].enableSelect()
+
+                components[elementId].n1 = new Connector('in', 'n1', components[elementId].dom.children[0].children[0], components[elementId])
+                components[elementId].n1.dom.id = 'c' + connectorId
+                connectors['c' + connectorId] = components[elementId].n1
+                connectors['c' + connectorId].enableSelect()
+                connectorId += 1
+                components[elementId].n2 = components[elementId].n1
+                components[elementId].nC = new Connector('in', 'n3', components[elementId].dom.children[0].children[1], components[elementId])
+                components[elementId].nC.dom.id = 'c' + connectorId
+                connectors['c' + connectorId] = components[elementId].nC
+                connectors['c' + connectorId].enableSelect()
+                connectorId += 1
+                components[elementId].nQ = new Connector('out', 'nQ', components[elementId].dom.children[2].children[0], components[elementId])
+                components[elementId].nQ.dom.id = 'c' + connectorId
+                connectors['c' + connectorId] = components[elementId].nQ
+                connectors['c' + connectorId].enableSelect()
+                connectorId += 1
+                components[elementId].nQNot = new Connector('out', 'nQNot', components[elementId].dom.children[2].children[1], components[elementId])
+                components[elementId].nQNot.dom.id = 'c' + connectorId
+                connectors['c' + connectorId] = components[elementId].nQNot
+                connectors['c' + connectorId].enableSelect()
+                connectorId += 1
+
+                sim.appendChild(component)
+                elementId += 1
+            }
         }
     }
     else {
