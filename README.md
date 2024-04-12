@@ -1,3 +1,7 @@
+Try it out [here](https://sneezy-logic.vercel.app)
+
+# Version History
+
 ### v0.1.2 (pre)
 present
 #### Features
